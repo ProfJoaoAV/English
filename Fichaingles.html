@@ -110,18 +110,65 @@
             color: #a16207;
             letter-spacing: 1px;
         }
-        .img-placeholder {
-            background-color: #d1d5db;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+
+        /* --- ESTILOS DE ABAS (TABS) --- */
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            margin-bottom: -1px;
+            border: 1px solid #d1d5db;
+            border-bottom: 1px solid #d1d5db;
+            background-color: #f9fafb;
+            font-weight: 500;
             color: #6b7280;
-            font-size: 0.875rem;
-            text-align: center;
+            cursor: pointer;
+            border-radius: 6px 6px 0 0;
         }
-        .img-placeholder-text {
-            display: block;
+        .tab-btn.active {
+            background-color: #ffffff;
+            border-bottom: 1px solid #ffffff;
+            color: #eab308;
+            font-weight: 600;
+        }
+        .tab-content {
+            border: 1px solid #d1d5db;
+            border-radius: 0 0 8px 8px;
+            padding: 1.5rem;
+            background-color: #ffffff;
+        }
+        
+        /* --- ESTILOS DE TABELA DE CORREÇÃO --- */
+        .feedback-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        .feedback-table th, .feedback-table td {
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .feedback-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        .feedback-table tr.correct-row {
+            background-color: #f0fdf4; /* Verde claro */
+        }
+        .feedback-table tr.incorrect-row {
+            background-color: #fef2f2; /* Vermelho claro */
+        }
+        .feedback-table .answer-col {
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .feedback-table .correct-answer {
+            color: #166534; /* Verde escuro */
+            font-weight: 600;
+        }
+        .feedback-table .incorrect-answer {
+            color: #991b1b; /* Vermelho escuro */
+            font-weight: 600;
+            text-decoration: line-through;
         }
         
         /* Estilos de Impressão */
@@ -137,35 +184,32 @@
                 border: none;
                 box-shadow: none;
             }
-            /* Esconder tudo exceto a secção de resultados */
+            /* Esconder tudo exceto o certificado */
             body * {
                 visibility: hidden;
             }
-            #result-section, #result-section * {
+            #certificate, #certificate * {
                 visibility: visible;
             }
             #result-section {
+                visibility: visible;
+            }
+            #certificate {
                 position: absolute;
                 left: 0;
                 top: 0;
                 width: 100%;
                 margin: 0;
                 padding: 1rem;
-            }
-            /* Esconder botões e feedback na impressão */
-            .btn, #print-btn, #auto-feedback, #reading-feedback-ia, #writing-feedback-ia, .correction-feedback-header {
-                display: none;
-            }
-            #certificate {
                 border: 10px solid #262626 !important;
                 background-color: #fffbeb !important;
                 -webkit-print-color-adjust: exact; /* Chrome/Safari */
                 color-adjust: exact; /* standards */
                 box-shadow: none;
             }
-            /* Assegurar que os títulos do certificado são visíveis */
-            #certificate h3, #certificate p, #certificate span {
-                visibility: visible;
+            /* Esconder botões e abas na impressão */
+            .btn, #print-btn, .tabs-container, #correction-details {
+                display: none;
             }
         }
     </style>
@@ -303,7 +347,7 @@
                         <p class="text-center font-semibold mt-2">Eddie</p>
                     </div>
                     <div>
-                        <img src="https://profjoaoav.github.io/English/max.jpg" alt="Max" class="rounded-lg shadow-md h-48 w-full object-cover object-top" onerror="this.src='httpsG://placehold.co/200x280/e0e0e0/555?text=Max'">
+                        <img src="https://profjoaoav.github.io/English/max.jpg" alt="Max" class="rounded-lg shadow-md h-48 w-full object-cover object-top" onerror="this.src='https://placehold.co/200x280/e0e0e0/555?text=Max'">
                         <p class="text-center font-semibold mt-2">Max</p>
                     </div>
                 </div>
@@ -395,55 +439,78 @@
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             <h2 class="text-xl font-semibold text-gray-700">A corrigir a tua ficha...</h2>
-            <p class="text-gray-600">A Inteligência Artificial está a ler a tua redação.</p>
+            <p class="text-gray-600">A Inteligência Artificial está a ler as tuas respostas.</p>
         </div>
 
         <!-- Secção de Resultados -->
         <div id="result-section" class="section-card hidden">
             <h2 class="text-2xl font-semibold mb-6 text-center">O Teu Resultado</h2>
 
-            <div id="certificate" class="mb-6">
-                <p class="text-center text-lg mb-4">This acknowledges that</p>
-                <h3 id="cert-name" class="text-center text-3xl font-bold text-yellow-700 mb-4"></h3>
-                <p class="text-center text-lg mb-4">from class <span id="cert-class" class="font-semibold"></span> (Year <span id="cert-year" class="font-semibold"></span>)</p>
-                <p class="text-center text-lg mb-6">has successfully completed the Interactive English Test.</p>
-                <p class="text-center text-2xl font-bold mb-4">Final Score: <span id="final-score" class="text-blue-600"></span></p>
-                <div class="text-center text-sm text-gray-600 mt-8">
-                    <p>Issued on: <span id="cert-date"></span></p>
+            <!-- --- NOVO SISTEMA DE ABAS --- -->
+            <div class="tabs-container mb-4">
+                <button id="cert-tab-btn" class="tab-btn active">Certificado</button>
+                <button id="details-tab-btn" class="tab-btn">Correção Detalhada</button>
+            </div>
+
+            <!-- Conteúdo da Aba: Certificado -->
+            <div id="cert-tab" class="tab-content">
+                <div id="certificate">
+                    <p class="text-center text-lg mb-4">This acknowledges that</p>
+                    <h3 id="cert-name" class="text-center text-3xl font-bold text-yellow-700 mb-4"></h3>
+                    <p class="text-center text-lg mb-4">from class <span id="cert-class" class="font-semibold"></span> (Year <span id="cert-year" class="font-semibold"></span>)</p>
+                    <p class="text-center text-lg mb-6">has successfully completed the Interactive English Test.</p>
+                    
+                    <!-- PONTUAÇÃO ATUALIZADA -->
+                    <p class="text-center text-2xl font-bold mb-4">Média Final: <span id="final-score" class="text-blue-600">0%</span></p>
+                    <div class="mt-6 pt-4 border-t border-yellow-700/50 text-left text-lg space-y-2">
+                        <p><strong>Reading:</strong> <span id="reading-score" class="font-bold text-blue-600">0%</span></p>
+                        <p><strong>Writing:</strong> <span id="writing-score" class="font-bold text-blue-600">0%</span></p>
+                        <p><strong>Grammar & Vocabulary:</strong> <span id="gv-score" class="font-bold text-blue-600">0%</span></p>
+                    </div>
+                    <!-- FIM DA ATUALIZAÇÃO -->
+
+                    <div class="text-center text-sm text-gray-600 mt-8">
+                        <p>Issued on: <span id="cert-date"></span></p>
+                    </div>
+                </div>
+                <button id="print-btn" class="btn w-full mt-4">Imprimir Certificado</button>
+            </div>
+
+            <!-- Conteúdo da Aba: Correção Detalhada -->
+            <div id="details-tab" class="tab-content hidden">
+                <div class="space-y-6">
+                    <!-- Correção de Perguntas Fechadas -->
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800 mb-2">Exercícios Automáticos (Reading, Grammar, Vocab):</h4>
+                        <p class="text-sm mb-3">Pontuação: <span id="auto-score-display" class="font-bold"></span></p>
+                        <div id="auto-feedback" class="overflow-x-auto">
+                            <!-- A tabela será inserida aqui pelo JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Correção IA - Reading -->
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800">Secção 1.C (Reading - Respostas Curtas):</h4>
+                        <div id="reading-feedback-ia" class="mt-2 p-3 bg-gray-50 rounded-md border text-sm"></div>
+                    </div>
+
+                    <!-- Correção IA - Writing -->
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800">Secção 4 (Writing - "My Best Friend"):</h4>
+                        <div id="writing-feedback-ia" class="mt-2 p-3 bg-gray-50 rounded-md border text-sm"></div>
+                    </div>
                 </div>
             </div>
-
-            <h3 class="text-xl font-semibold mb-3 correction-feedback-header">Correção Detalhada:</h3>
-            
-            <!-- Correção de Perguntas Fechadas -->
-            <div class="mb-4 correction-feedback-header">
-                <h4 class="font-semibold text-lg text-gray-800">Exercícios Automáticos:</h4>
-                <p>Pontuação: <span id="auto-score-display" class="font-bold"></span></p>
-                <div id="auto-feedback" class="mt-2 text-sm text-gray-600"></div>
-            </div>
-
-            <!-- Correção IA - Reading -->
-            <div class="mb-4 correction-feedback-header">
-                <h4 class="font-semibold text-lg text-gray-800">Secção 1 (Reading - Respostas Curtas):</h4>
-                <div id="reading-feedback-ia" class="mt-2 p-3 bg-gray-50 rounded-md border"></div>
-            </div>
-
-            <!-- Correção IA - Writing -->
-            <div class="mb-4 correction-feedback-header">
-                <h4 class="font-semibold text-lg text-gray-800">Secção 4 (Writing - "My Best Friend"):</h4>
-                <div id="writing-feedback-ia" class="mt-2 p-3 bg-gray-50 rounded-md border"></div>
-            </div>
-
-            <button id="print-btn" class="btn w-full">Imprimir Certificado</button>
+            <!-- --- FIM DO SISTEMA DE ABAS --- -->
         </div>
 
     </div>
 
-    <script type="module">
-        // Configuração da API (NÃO PRECISA DE CHAVE)
+    <script type"module">
+        // --- LÓGICA DA API VOLTOU A ESTAR AQUI ---
         const apiKey = "AIzaSyCDyHm-EDRAoObvfjRoBM0AlBF5UgToU3I"; // Deixar em branco; será fornecida pelo ambiente
         const textApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-
+        
         // Variáveis Globais
         const userInfo = { name: "", class: "", year: "" };
         let allAnswers = {};
@@ -461,12 +528,10 @@
                 return;
             }
 
-            // Guardar dados
             userInfo.name = studentName;
             userInfo.class = studentClass;
             userInfo.year = studentYear;
 
-            // Esconder boas-vindas e mostrar a primeira secção
             document.getElementById("welcome-section").classList.add("hidden");
             document.getElementById("reading-section").classList.remove("hidden");
         });
@@ -480,7 +545,7 @@
                 if (currentSection && nextSectionId) {
                     currentSection.classList.add("hidden");
                     document.getElementById(nextSectionId).classList.remove("hidden");
-                    window.scrollTo(0, 0); // Scroll para o topo
+                    window.scrollTo(0, 0);
                 }
             });
         });
@@ -492,84 +557,129 @@
             document.getElementById("word-count").textContent = `Word count: ${words.length}`;
         });
 
+        // --- LÓGICA DAS ABAS (TABS) ---
+        const certTabBtn = document.getElementById("cert-tab-btn");
+        const detailsTabBtn = document.getElementById("details-tab-btn");
+        const certTab = document.getElementById("cert-tab");
+        const detailsTab = document.getElementById("details-tab");
+
+        certTabBtn.addEventListener("click", () => {
+            certTab.classList.remove("hidden");
+            detailsTab.classList.add("hidden");
+            certTabBtn.classList.add("active");
+            detailsTabBtn.classList.remove("active");
+        });
+
+        detailsTabBtn.addEventListener("click", () => {
+            detailsTab.classList.remove("hidden");
+            certTab.classList.add("hidden");
+            detailsTabBtn.classList.add("active");
+            certTabBtn.classList.remove("active");
+        });
+
         // Submeter o teste
         document.getElementById("submit-btn").addEventListener("click", async () => {
-            // 1. Mostrar loading
             document.getElementById("writing-section").classList.add("hidden");
             document.getElementById("loading-section").classList.remove("hidden");
             window.scrollTo(0, 0);
 
-            // 2. Recolher todas as respostas
             allAnswers = collectAnswers();
-
+            
+            // --- CÁLCULO DE PONTUAÇÃO ATUALIZADO ---
             // 3. Corrigir perguntas automáticas
-            const autoResult = calculateScore(allAnswers);
+            const gvResult = calculateGrammarVocabScore(allAnswers);
+            const readingAutoResult = calculateReadingScore(allAnswers);
 
-            // 4. Chamar IA para correções (de forma robusta)
             const readingAnswersText = Object.values(allAnswers.readingShort).join("").trim();
             const writingText = allAnswers.writing.trim();
 
-            // Objetos de "erro" padrão caso a IA falhe
+            // Objeto de erro para a Leitura
             const defaultReadingError = {
-                score: 0, maxScore: 10,
-                feedback: "<ul><li class='text-red-600'>Ocorreu um erro ao tentar corrigir esta secção. A pontuação não foi atribuída.</li></ul>"
+                score: 0,
+                maxScore: 10,
+                feedbackItems: [{
+                    question: 1, answer: "Erro", points: 0,
+                    justification: "Ocorreu um erro ao corrigir esta secção."
+                }]
             };
+            // Objeto de erro para a Redação
             const defaultWritingError = {
                 score: 0, maxScore: 20,
                 feedback: "<p class='text-red-600'>Ocorreu um erro ao tentar corrigir a redação. A pontuação não foi atribuída.</p>"
             };
             
-            // Promessa para Respostas de Leitura
-            let readingPromise;
+            // 4. Chamar IA
+            let readingIAPromise;
             if (readingAnswersText.length > 0) {
-                readingPromise = assessReadingAnswers(allAnswers.readingShort)
+                readingIAPromise = assessReadingAnswers(allAnswers.readingShort)
                     .catch(err => {
                         console.error("Erro na IA (Reading):", err);
-                        return defaultReadingError; // Retorna o objeto de erro
+                        return defaultReadingError;
                     });
             } else {
-                readingPromise = Promise.resolve({ score: 0, maxScore: 10, feedback: "<ul><li>(Não respondido)</li></ul>" });
+                readingIAPromise = Promise.resolve({ 
+                    score: 0, 
+                    maxScore: 10, 
+                    feedbackItems: [
+                        {question: 1, answer: "(em branco)", points: 0, justification: "Não respondido."},
+                        {question: 2, answer: "(em branco)", points: 0, justification: "Não respondido."},
+                        {question: 3, answer: "(em branco)", points: 0, justification: "Não respondido."},
+                        {question: 4, answer: "(em branco)", points: 0, justification: "Não respondido."},
+                        {question: 5, answer: "(em branco)", points: 0, justification: "Não respondido."},
+                    ]
+                });
             }
 
-            // Promessa para Redação
             let writingPromise;
             if (writingText.length > 0) {
                 writingPromise = assessWriting(writingText)
                     .catch(err => {
                         console.error("Erro na IA (Writing):", err);
-                        return defaultWritingError; // Retorna o objeto de erro
+                        return defaultWritingError;
                     });
             } else {
                 writingPromise = Promise.resolve({ score: 0, maxScore: 20, feedback: "<p>Não foi escrito nenhum texto.</p>" });
             }
-
-            // Tentar obter os resultados (agora NUNCA deve falhar)
+            
             try {
-                const [readingFeedback, writingFeedback] = await Promise.all([
-                    readingPromise,
+                const [readingIAResult, writingResult] = await Promise.all([
+                    readingIAPromise,
                     writingPromise
                 ]);
 
-                // 5. Calcular pontuação final
-                const autoScore = autoResult.score || 0;
-                const readingScore = readingFeedback.score || 0;
-                const writingScore = writingFeedback.score || 0;
+                // 5. Calcular pontuações FINAIS (EM PERCENTAGEM)
                 
-                const autoMax = autoResult.maxScore || 1; // Evitar divisão por zero
-                const readingMax = readingFeedback.maxScore || 10;
-                const writingMax = writingFeedback.maxScore || 20;
+                // Skill 1: Reading
+                const readingTotalScore = readingAutoResult.score + readingIAResult.score;
+                const readingTotalMax = readingAutoResult.maxScore + readingIAResult.maxScore; // 9 + 10 = 19
+                const readingPercentage = Math.round((readingTotalScore / readingTotalMax) * 100);
 
-                const finalScore = autoScore + readingScore + writingScore;
-                const maxScore = autoMax + readingMax + writingMax;
+                // Skill 2: Writing
+                const writingTotalScore = writingResult.score;
+                const writingTotalMax = writingResult.maxScore; // 20
+                const writingPercentage = Math.round((writingTotalScore / writingTotalMax) * 100);
+
+                // Skill 3: Grammar & Vocab
+                const gvTotalScore = gvResult.score;
+                const gvTotalMax = gvResult.maxScore; // 27
+                const gvPercentage = Math.round((gvTotalScore / gvTotalMax) * 100);
+
+                // Média Final
+                const finalPercentage = Math.round((readingPercentage + writingPercentage + gvPercentage) / 3);
                 
-                const percentage = Math.round((finalScore / maxScore) * 100);
-                const displayPercentage = isNaN(percentage) ? 0 : percentage;
-
                 // 6. Preencher e mostrar resultados
-                displayResults(autoResult, readingFeedback, writingFeedback, displayPercentage);
+                displayResults(
+                    gvResult, 
+                    readingAutoResult, 
+                    readingIAResult, 
+                    writingResult, 
+                    readingPercentage, 
+                    writingPercentage, 
+                    gvPercentage, 
+                    finalPercentage
+                );
 
             } catch (error) {
-                // Este "catch" só deve apanhar erros de lógica internos, não erros de API
                 console.error("Erro no processo de submissão:", error);
                 displayError(error);
             }
@@ -590,15 +700,17 @@
 
             // Reading
             document.querySelectorAll('#reading-section input[type="text"]').forEach(input => {
-                if (input.id.startsWith("q1-opp-")) answers.readingOpp[input.id] = input.value;
-                if (input.id.startsWith("q1-fill-")) answers.readingFill[input.id] = input.value;
-                if (input.id.startsWith("q1-ans-")) answers.readingShort[input.id] = input.value;
+                const id = input.id;
+                if (id.startsWith("q1-opp-")) answers.readingOpp[id] = input.value;
+                if (id.startsWith("q1-fill-")) answers.readingFill[id] = input.value;
+                if (id.startsWith("q1-ans-")) answers.readingShort[id] = input.value;
             });
 
             // Grammar
             document.querySelectorAll('#grammar-section input[type="text"]').forEach(input => {
-                if (input.id.startsWith("q2-gram-")) answers.grammarPronouns[input.id] = input.value;
-                if (input.id.startsWith("q2-verb-")) answers.grammarVerbs[input.id] = input.value;
+                const id = input.id;
+                if (id.startsWith("q2-gram-")) answers.grammarPronouns[id] = input.value;
+                if (id.startsWith("q2-verb-")) answers.grammarVerbs[id] = input.value;
             });
 
             // Vocabulary
@@ -615,116 +727,164 @@
             return answers;
         }
 
-        // Função para corrigir perguntas de preenchimento/seleção
-        function calculateScore(answers) {
+        // --- FUNÇÃO DE CORREÇÃO SÓ DE GRAMMAR & VOCAB ---
+        function calculateGrammarVocabScore(answers) {
             let correct = 0;
             let total = 0;
-            let feedback = "<ul>";
+            let feedbackItems = []; 
 
-            // Chaves de correção (simplificadas, com toLowerCase() para flexibilidade)
+            // Chaves de correção
             const keys = {
-                // Reading Opposites (1 ponto cada)
-                "q1-opp-1": "short", "q1-opp-2": "slim", "q1-opp-3": "long", "q1-opp-4": "loves",
-                // Reading Fill (1 ponto cada)
-                "q1-fill-1": "portuguese", "q1-fill-2": "demogorgon", "q1-fill-3": "short brown", "q1-fill-4": "one", "q1-fill-5": "playing", // Aceitar "playing" ou "playing dungeons & dragons"
-                // Grammar Pronouns (1 ponto cada)
-                "q2-gram-1": "we", "q2-gram-2": "our", "q2-gram-3": "she", "q2-gram-4": "her", "q2-gram-5": "he", "q2-gram-6": "his", "q2-gram-7": "their", "q2-gram-8": "they",
-                // Grammar Verbs (1 ponto cada)
-                "q2-verb-1": "is", "q2-verb-2": "is", "q2-verb-3": "are", "q2-verb-4": "isn't", "q2-verb-5": "is", "q2-verb-6": "have got", "q2-verb-7": "is",
-                "q2-verb-8": "isn't", // Alterado
-                "q2-verb-9": "has got", "q2-verb-10": "have", "q2-verb-11": "got",
-                // Vocab Match (1 ponto cada)
-                "q3-match-1": "Dustin", "q3-match-2": "Max", "q3-match-3": "Eddie", "q3-match-4": "Eleven",
-                // Vocab Adjectives (8 corretos, 0.5 ponto cada = 4 pontos)
-                "adj": ["Brave", "Loyal", "Funny", "Cheerful", "Stubborn", "Generous", "Kind", "Shy"]
-            };
-
-            // Corrigir Reading Opposites
-            Object.keys(answers.readingOpp).forEach(key => {
-                total++;
-                if ((answers.readingOpp[key] || "").trim().toLowerCase() === keys[key]) {
-                    correct++;
-                } else {
-                    feedback += `<li>Reading (Opposites) - ${key}: Resposta '${answers.readingOpp[key]}'. Correta: '${keys[key]}'.</li>`;
-                }
-            });
-
-            // Corrigir Reading Fill-in
-            Object.keys(answers.readingFill).forEach(key => {
-                total++;
-                const answer = (answers.readingFill[key] || "").trim().toLowerCase();
-                if (answer.includes(keys[key])) { // Permite respostas parciais (ex: "playing" em vez de "playing...")
-                    correct++;
-                } else {
-                    feedback += `<li>Reading (Fill-in) - ${key}: Resposta '${answer}'. Correta: '${keys[key]}'.</li>`;
-                }
-            });
-            
-            // Corrigir Grammar Pronouns
-            Object.keys(answers.grammarPronouns).forEach(key => {
-                total++;
-                const answer = (answers.grammarPronouns[key] || "").trim().toLowerCase().replace("’", "'");
-                if (answer === keys[key]) {
-                    correct++;
-                } else {
-                    feedback += `<li>Grammar (Pronouns) - ${key}: Resposta '${answer}'. Correta: '${keys[key]}'.</li>`;
-                }
-            });
-
-            // Corrigir Grammar Verbs
-            Object.keys(answers.grammarVerbs).forEach(key => {
-                total++;
-                 const answer = (answers.grammarVerbs[key] || "").trim().toLowerCase().replace("’", "'");
+                "q2-gram-1": { key: "we", text: "Grammar A.1" },
+                "q2-gram-2": { key: "our", text: "Grammar A.1" },
+                "q2-gram-3": { key: "she", text: "Grammar A.2" },
+                "q2-gram-4": { key: "her", text: "Grammar A.2" },
+                "q2-gram-5": { key: "he", text: "Grammar A.3" },
+                "q2-gram-6": { key: "his", text: "Grammar A.3" },
+                "q2-gram-8": { key: "they", text: "Grammar A.4" },
+                "q2-gram-7": { key: "their", text: "Grammar A.4" },
                 
-                // Casos especiais (ex: "is not" vs "isn't")
-                const negativeKeys = ["q2-verb-4", "q2-verb-8"]; // Adicionado q2-verb-8
-                if (negativeKeys.includes(key) && (answer === "is not" || answer === "isn't")) {
-                    correct++;
-                } else if (answer === keys[key]) {
-                    correct++;
-                } else {
-                    feedback += `<li>Grammar (Verbs) - ${key}: Resposta '${answer}'. Correta: '${keys[key]}'.</li>`;
-                }
-            });
+                "q2-verb-1": { key: "is", text: "Grammar B.1" },
+                "q2-verb-2": { key: "is", text: "Grammar B.1" },
+                "q2-verb-3": { key: "are", text: "Grammar B.2" },
+                "q2-verb-6": { key: "have got", text: "Grammar B.2" },
+                "q2-verb-4": { key: "isn't", text: "Grammar B.3 (neg)" },
+                "q2-verb-5": { key: "is", text: "Grammar B.3" },
+                "q2-verb-7": { key: "is", text: "Grammar B.4" },
+                "q2-verb-8": { key: "isn't", text: "Grammar B.4 (neg)" },
+                "q2-verb-9": { key: "has got", text: "Grammar B.5" },
+                "q2-verb-10": { key: "have", text: "Grammar B.6" },
+                "q2-verb-11": { key: "got", text: "Grammar B.6" },
+                
+                "q3-match-1": { key: "dustin", text: "Vocab A.1 (Dustin)" },
+                "q3-match-2": { key: "max", text: "Vocab A.2 (Max)" },
+                "q3-match-3": { key: "eddie", text: "Vocab A.3 (Eddie)" },
+                "q3-match-4": { key: "eleven", text: "Vocab A.4 (Eleven)" }
+            };
+            const adjKey = ["Brave", "Loyal", "Funny", "Cheerful", "Stubborn", "Generous", "Kind", "Shy"];
 
-            // Corrigir Vocab Match
-            Object.keys(answers.vocabMatch).forEach(key => {
+            // Função helper para verificar e adicionar feedback
+            function checkAnswer(id, answer, group) {
                 total++;
-                if ((answers.vocabMatch[key] || "") === keys[key]) {
-                    correct++;
+                const studentAnswer = (answer || "").trim().toLowerCase();
+                const correctAnswer = keys[id].key;
+                let isCorrect = false;
+                
+                if (id === "q2-verb-4" || id === "q2-verb-8") { // Casos negativos
+                    isCorrect = (studentAnswer === "isn't" || studentAnswer === "is not");
                 } else {
-                    feedback += `<li>Vocabulary (Match) - ${key}: Resposta '${answers.vocabMatch[key]}'. Correta: '${keys[key]}'.</li>`;
+                    isCorrect = (studentAnswer === correctAnswer);
                 }
-            });
+                
+                if (isCorrect) {
+                    correct++;
+                }
+
+                feedbackItems.push({
+                    group: group,
+                    question: keys[id].text,
+                    student: (answer || ""), // Manter a resposta original para mostrar
+                    correct: keys[id].key, // Resposta correta
+                    score: isCorrect ? 1 : 0,
+                    maxScore: 1
+                });
+            }
+
+            // Corrigir todos os grupos de G&V
+            Object.keys(answers.grammarPronouns).forEach(id => checkAnswer(id, answers.grammarPronouns[id], "Gramática (A)"));
+            Object.keys(answers.grammarVerbs).forEach(id => checkAnswer(id, answers.grammarVerbs[id], "Gramática (B)"));
+            Object.keys(answers.vocabMatch).forEach(id => checkAnswer(id, answers.vocabMatch[id], "Vocabulário (A)"));
 
             // Corrigir Vocab Adjectives (Total 4 pontos)
             total += 4;
             let adjCorrect = 0;
             let adjIncorrect = 0;
             answers.vocabAdj.forEach(adj => {
-                if (keys.adj.includes(adj)) {
+                if (adjKey.includes(adj)) {
                     adjCorrect++;
                 } else {
                     adjIncorrect++;
                 }
             });
-            // Pontuação: (Acertos - Erros) * 0.5, mínimo 0.
             let adjScore = Math.max(0, (adjCorrect - adjIncorrect) * 0.5);
             correct += adjScore;
-            if (adjScore < 4) {
-                 feedback += `<li>Vocabulary (Adjectives): Pontuação ${adjScore}/4. (Respostas corretas: ${keys.adj.join(", ")}).</li>`;
-            }
 
-            feedback += "</ul>";
+            feedbackItems.push({
+                group: "Vocabulário (B)",
+                question: "Adjetivos de Personalidade",
+                student: `${adjCorrect} corretos, ${adjIncorrect} errados`,
+                correct: "8 adjetivos",
+                score: adjScore,
+                maxScore: 4
+            });
             
             return {
                 score: correct,
-                maxScore: total,
-                feedback: feedback === "<ul></ul>" ? "<p>Perfeito! Todos os exercícios automáticos estão corretos.</p>" : feedback
+                maxScore: total, // Deverá ser 27
+                feedbackItems: feedbackItems
             };
         }
 
-        // Função para chamar API Gemini (com retentativa)
+        // --- NOVA FUNÇÃO DE CORREÇÃO SÓ DE READING ---
+        function calculateReadingScore(answers) {
+            let correct = 0;
+            let total = 0;
+            let feedbackItems = []; 
+
+            // Chaves de correção
+            const keys = {
+                "q1-opp-1": { key: "short", text: "Oposto de 'tall'" },
+                "q1-opp-2": { key: "slim", text: "Oposto de 'fat'" },
+                "q1-opp-3": { key: "long", text: "Oposto de 'short (hair)'" },
+                "q1-opp-4": { key: "loves", text: "Oposto de 'hates'" },
+                
+                "q1-fill-1": { key: "portuguese", text: "Reading B.1 (nacionalidade)" },
+                "q1-fill-2": { key: "demogorgon", text: "Reading B.2 (nome cão)" },
+                "q1-fill-3": { key: "short brown", text: "Reading B.3 (cabelo)" },
+                "q1-fill-4": { key: "one", text: "Reading B.4 (irmã)" },
+                "q1-fill-5": { key: "playing", text: "Reading B.5 (hobby)" }
+            };
+
+            // Função helper para verificar e adicionar feedback
+            function checkAnswer(id, answer, group) {
+                total++;
+                const studentAnswer = (answer || "").trim().toLowerCase();
+                const correctAnswer = keys[id].key;
+                let isCorrect = false;
+                
+                if (id === "q1-fill-5") { // Caso especial "playing..."
+                    isCorrect = studentAnswer.includes(correctAnswer);
+                } else {
+                    isCorrect = (studentAnswer === correctAnswer);
+                }
+                
+                if (isCorrect) {
+                    correct++;
+                }
+
+                feedbackItems.push({
+                    group: group,
+                    question: keys[id].text,
+                    student: (answer || ""), // Manter a resposta original para mostrar
+                    correct: keys[id].key, // Resposta correta
+                    score: isCorrect ? 1 : 0,
+                    maxScore: 1
+                });
+            }
+
+            // Corrigir todos os grupos de Reading
+            Object.keys(answers.readingOpp).forEach(id => checkAnswer(id, answers.readingOpp[id], "Leitura (A)"));
+            Object.keys(answers.readingFill).forEach(id => checkAnswer(id, answers.readingFill[id], "Leitura (B)"));
+
+            return {
+                score: correct,
+                maxScore: total, // Deverá ser 9
+                feedbackItems: feedbackItems
+            };
+        }
+
+
+        // --- FUNÇÃO DE CHAMADA À API (RE-INTEGRADA) ---
         async function callGeminiAPI(payload, retries = 3, delay = 1000) {
             try {
                 const response = await fetch(textApiUrl, {
@@ -752,12 +912,12 @@
                     return callGeminiAPI(payload, retries - 1, delay * 2); // Exponential backoff
                 } else {
                     console.error("Erro final ao chamar API:", error);
-                    throw error; // Lança o erro para ser apanhado pelo .catch() robusto
+                    throw error;
                 }
             }
         }
 
-        // IA para corrigir as perguntas curtas de Leitura (Total 10 pontos)
+        // --- FUNÇÃO DE CORREÇÃO IA (RE-INTEGRADA E ATUALIZADA) ---
         async function assessReadingAnswers(shortAnswers) {
             const systemPrompt = `És um professor de Inglês a corrigir uma ficha do 6º ano. As perguntas e respostas esperadas (em inglês) são:
 1. When is João's birthday? (Expected: On 31st October / 31st October)
@@ -766,10 +926,30 @@
 4. Who is Demogorgon? (Expected: His dog / João's dog)
 5. What’s his favourite type of food? (Expected: Waffles)
 
-Avalia as 5 respostas do aluno. Atribui 2 pontos por resposta totalmente correta e 1 ponto por parcialmente correta (ex: "October 31st" em vez de "On...").
-Formata a resposta como um JSON {"score": S, "maxScore": 10, "feedback": "<ul><li>...</li></ul>"}.
-O feedback (em Português) deve ser uma lista <ul> com 5 <li>, um para cada resposta, indicando a pontuação (0, 1, or 2) e uma justificação muito breve.`;
+Avalia as 5 respostas do aluno. Atribui 2 pontos por resposta totalmente correta e 1 ponto por parcialmente correta.
+O feedback (em Português) deve ser claro, positivo e explicar a pontuação (0, 1, ou 2).
 
+Formata a resposta como um JSON com este schema:
+{
+  "type": "OBJECT",
+  "properties": {
+    "feedbackItems": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "question": { "type": "NUMBER" },
+          "answer": { "type": "STRING" },
+          "points": { "type": "NUMBER" },
+          "justification": { "type": "STRING" }
+        }
+      }
+    },
+    "score": { "type": "NUMBER" }
+  }
+}
+O 'score' deve ser a soma total dos 'points'. O 'answer' deve ser a resposta do aluno.`;
+            
             let userQuery = "Respostas do Aluno:\n";
             userQuery += `1. ${shortAnswers['q1-ans-1']}\n`;
             userQuery += `2. ${shortAnswers['q1-ans-2']}\n`;
@@ -777,80 +957,177 @@ O feedback (em Português) deve ser uma lista <ul> com 5 <li>, um para cada resp
             userQuery += `4. ${shortAnswers['q1-ans-4']}\n`;
             userQuery += `5. ${shortAnswers['q1-ans-5']}\n`;
 
+            const responseSchema = {
+                type: "OBJECT",
+                properties: {
+                    "feedbackItems": {
+                        "type": "ARRAY",
+                        "items": {
+                            "type": "OBJECT",
+                            "properties": {
+                                "question": { "type": "NUMBER" },
+                                "answer": { "type": "STRING" },
+                                "points": { "type": "NUMBER" },
+                                "justification": { "type": "STRING" }
+                            },
+                            "required": ["question", "answer", "points", "justification"]
+                        }
+                    },
+                    "score": { "type": "NUMBER" }
+                },
+                "required": ["feedbackItems", "score"]
+            };
+
             const payload = {
                 contents: [{ parts: [{ text: userQuery }] }],
                 systemInstruction: { parts: [{ text: systemPrompt }] },
                 generationConfig: {
                     responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            "score": { "type": "NUMBER" },
-                            "maxScore": { "type": "NUMBER" },
-                            "feedback": { "type": "STRING" }
-                        }
-                    }
+                    responseSchema: responseSchema
                 }
             };
             
             const jsonString = await callGeminiAPI(payload);
-            return JSON.parse(jsonString);
+            const result = JSON.parse(jsonString);
+            
+            return {
+                score: result.score || 0,
+                maxScore: 10,
+                feedbackItems: result.feedbackItems || [] 
+            };
         }
 
-        // IA para corrigir a Redação (Total 20 pontos)
+        // --- FUNÇÃO DE CORREÇÃO IA (RE-INTEGRADA) ---
         async function assessWriting(writingText) {
-            const systemPrompt = `És um professor de Inglês experiente a corrigir um texto (redação) de um aluno do 6º ano, em Portugal. O tema é "My Best Friend". O aluno deve escrever 80-100 palavras.
+            const systemPrompt = `És um professor de Inglês experiente a corrigir um texto (redação) de um aluno do 6º ano, em Portugal. O tema é "My Best Friend".
 
 Avalia o texto com base nos seguintes critérios (Total 20 pontos):
-1.  **Task Achievement (5 pontos):** O aluno abordou o tema? Descreveu o amigo (nome, idade, aparência, personalidade, hobbies)?
-2.  **Vocabulary (5 pontos):** Usou vocabulário relevante (descrição física, personalidade, hobbies)?
-3.  **Grammar (5 pontos):** Usou o "To Be" e "Have Got" corretamente? Usou pronomes e possessivos?
-4.  **Coherence & Cohesion (5 pontos):** O texto é fácil de ler? Usou "and", "but", "so"?
+1.  **Task Achievement (5 pontos):** Abordou o tema?
+2.  **Vocabulary (5 pontos):** Usou vocabulário relevante?
+3.  **Grammar (5 pontos):** Usou o "To Be" e "Have Got" corretamente?
+4.  **Coherence & Cohesion (5 pontos):** O texto é fácil de ler?
 
-Dá uma pontuação para cada critério e uma pontuação total (0-20).
-Fornece feedback construtivo em Português. Começa com um ponto positivo e depois dá 2-3 sugestões específicas de melhoria (ex: "Tenta usar mais adjetivos de personalidade" ou "Cuidado com a 3ª pessoa do 'To Be'").
-
+Fornece feedback construtivo em Português. **Sê específico e positivo, focado num aluno do 6º ano. Aponta um ponto positivo e duas coisas específicas a melhorar.**
 Formata a resposta como um JSON:
 {"score": S, "maxScore": 20, "feedback": "<p>Feedback...</p><ul><li>Task: X/5</li><li>Vocab: Y/5</li><li>Grammar: Z/5</li><li>Coherence: W/5</li></ul>"}`;
             
+            const userQuery = `Texto do Aluno: "${writingText}"`;
+
+            const responseSchema = {
+                type: "OBJECT",
+                properties: {
+                    "score": { "type": "NUMBER" },
+                    "maxScore": { "type": "NUMBER" },
+                    "feedback": { "type": "STRING" }
+                },
+                "required": ["score", "maxScore", "feedback"]
+            };
+
             const payload = {
-                contents: [{ parts: [{ text: `Texto do Aluno: "${writingText}"` }] }],
+                contents: [{ parts: [{ text: userQuery }] }],
                 systemInstruction: { parts: [{ text: systemPrompt }] },
                 generationConfig: {
                     responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            "score": { "type": "NUMBER" },
-                            "maxScore": { "type": "NUMBER" },
-                            "feedback": { "type": "STRING" }
-                        }
-                    }
+                    responseSchema: responseSchema
                 }
             };
-
+            
             const jsonString = await callGeminiAPI(payload);
             return JSON.parse(jsonString);
         }
 
-        // Função para mostrar os resultados
-        function displayResults(autoResult, readingFeedback, writingFeedback, percentage) {
+        // --- FUNÇÃO displayResults (ATUALIZADA) ---
+        function displayResults(
+            gvResult, 
+            readingAutoResult, 
+            readingIAResult, 
+            writingResult, 
+            readingPercentage, 
+            writingPercentage, 
+            gvPercentage, 
+            finalPercentage
+        ) {
             // Preencher Certificado
             document.getElementById("cert-name").textContent = userInfo.name;
             document.getElementById("cert-class").textContent = userInfo.class;
             document.getElementById("cert-year").textContent = userInfo.year;
-            document.getElementById("final-score").textContent = `${percentage}%`;
+            // Scores ATUALIZADOS
+            document.getElementById("final-score").textContent = `${finalPercentage}%`;
+            document.getElementById("reading-score").textContent = `${readingPercentage}%`;
+            document.getElementById("writing-score").textContent = `${writingPercentage}%`;
+            document.getElementById("gv-score").textContent = `${gvPercentage}%`;
+
             document.getElementById("cert-date").textContent = new Date().toLocaleDateString("pt-PT");
 
-            // Preencher Feedback Automático
-            document.getElementById("auto-score-display").textContent = `${autoResult.score.toFixed(1)} / ${autoResult.maxScore} pontos`;
-            document.getElementById("auto-feedback").innerHTML = autoResult.feedback;
+            // Preencher Feedback Automático (Tabela)
+            const autoTotalScore = readingAutoResult.score + gvResult.score;
+            const autoTotalMax = readingAutoResult.maxScore + gvResult.maxScore;
+            document.getElementById("auto-score-display").textContent = `${autoTotalScore.toFixed(1)} / ${autoTotalMax} pontos`;
+            
+            // Combinar os dois arrays de feedback para a tabela
+            const allAutoFeedbackItems = [...readingAutoResult.feedbackItems, ...gvResult.feedbackItems];
+
+            let tableHtml = `
+                <table class="feedback-table">
+                    <thead>
+                        <tr>
+                            <th>Exercício</th>
+                            <th>A Tua Resposta</th>
+                            <th>Resposta Correta</th>
+                            <th>Pontos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            let currentGroup = "";
+            allAutoFeedbackItems.forEach(item => {
+                // Adicionar linha de cabeçalho para o grupo
+                if (item.group !== currentGroup) {
+                    tableHtml += `
+                        <tr class="bg-gray-200">
+                            <td colspan="4" class="font-semibold">${item.group}</td>
+                        </tr>
+                    `;
+                    currentGroup = item.group;
+                }
+
+                const isCorrect = item.score === item.maxScore;
+                const rowClass = isCorrect ? 'correct-row' : 'incorrect-row';
+                const studentAnswerClass = isCorrect ? 'correct-answer' : 'incorrect-answer';
+                
+                tableHtml += `
+                    <tr class="${rowClass}">
+                        <td>${item.question}</td>
+                        <td class="answer-col ${studentAnswerClass}">${item.student || "<em>(em branco)</em>"}</td>
+                        <td class="answer-col correct-answer">${item.correct}</td>
+                        <td>${item.score.toFixed(1)} / ${item.maxScore}</td>
+                    </tr>
+                `;
+            });
+
+            tableHtml += `</tbody></table>`;
+            document.getElementById("auto-feedback").innerHTML = tableHtml;
 
             // Preencher Feedback IA (Reading)
-            document.getElementById("reading-feedback-ia").innerHTML = `<b>Pontuação IA:</b> ${readingFeedback.score} / ${readingFeedback.maxScore}<br>${readingFeedback.feedback}`;
+            let readingFeedbackHtml = `<b>Pontuação IA:</b> ${readingIAResult.score} / ${readingIAResult.maxScore}`;
+            
+            if (readingIAResult.feedbackItems && Array.isArray(readingIAResult.feedbackItems) && readingIAResult.feedbackItems.length > 0) {
+                readingFeedbackHtml += "<ul>";
+                readingIAResult.feedbackItems.forEach(item => {
+                    readingFeedbackHtml += `
+                        <li class="mt-2 p-2 border-b">
+                            <strong>Pergunta ${item.question}</strong> (Resposta: <em>"${item.answer || "em branco"}"</em>)<br>
+                            <strong>Correção:</strong> ${item.justification} (<strong>${item.points} / 2</strong> pontos)
+                        </li>`;
+                });
+                readingFeedbackHtml += "</ul>";
+            }
+            document.getElementById("reading-feedback-ia").innerHTML = readingFeedbackHtml;
+            
             
             // Preencher Feedback IA (Writing)
-            document.getElementById("writing-feedback-ia").innerHTML = `<b>Pontuação IA:</b> ${writingFeedback.score} / ${writingFeedback.maxScore}<br>${writingFeedback.feedback}`;
+            document.getElementById("writing-feedback-ia").innerHTML = `<b>Pontuação IA:</b> ${writingResult.score} / ${writingResult.maxScore}<br>${writingResult.feedback}`;
 
             // Esconder loading e mostrar resultados
             document.getElementById("loading-section").classList.add("hidden");

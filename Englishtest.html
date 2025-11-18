@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Inglês (6º Ano)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #e5e7eb;
+        }
+        .section-card {
+            width: 100%;
+            padding: 1.5rem;
+            border-radius: 10px;
+            background-color: #fff;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hidden {
+            display: none;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            background-color: #eab308; /* Amarelo "Stranger Things" */
+            color: #262626; /* Texto escuro */
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: 2px solid #262626;
+        }
+        .btn:hover {
+            background-color: #facc15;
+        }
+        input[type="text"],
+        textarea,
+        select,
+        .input-group {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background-color: #f9fafb;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #eab308;
+            box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.4);
+            outline: none;
+        }
+        .inline.w-auto {
+            width: auto;
+            display: inline-block;
+            margin: 0 4px;
+            padding: 0.25rem 0.5rem;
+            min-width: 60px;
+            text-align: center;
+            background-color: #fff;
+            border-bottom: 2px dashed #eab308;
+            border-radius: 4px;
+            border: 1px solid #d1d5db;
+        }
+        .question-group {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .question-label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.75rem;
+        }
+        #certificate {
+            border: 10px solid #262626;
+            padding: 2rem;
+            background-color: #fffbeb;
+            border-radius: 8px;
+            position: relative;
+        }
+        #certificate::before {
+            content: "CERTIFICATE OF ACHIEVEMENT";
+            position: absolute;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #a16207;
+            letter-spacing: 1px;
+        }
+
+        /* --- ESTILOS DE ABAS (TABS) --- */
+        .tab-btn {
+            padding: 0.5rem 1rem;
+            margin-bottom: -1px;
+            border: 1px solid #d1d5db;
+            border-bottom: 1px solid #d1d5db;
+            background-color: #f9fafb;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            border-radius: 6px 6px 0 0;
+        }
+        .tab-btn.active {
+            background-color: #ffffff;
+            border-bottom: 1px solid #ffffff;
+            color: #eab308;
+            font-weight: 600;
+        }
+        .tab-content {
+            border: 1px solid #d1d5db;
+            border-radius: 0 0 8px 8px;
+            padding: 1.5rem;
+            background-color: #ffffff;
+        }
+        
+        /* --- ESTILOS DE TABELA DE CORREÇÃO --- */
+        .feedback-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        .feedback-table th, .feedback-table td {
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .feedback-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        .feedback-table tr.correct-row {
+            background-color: #f0fdf4; /* Verde claro */
+        }
+        .feedback-table tr.incorrect-row {
+            background-color: #fef2f2; /* Vermelho claro */
+        }
+        .feedback-table .answer-col {
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .feedback-table .correct-answer {
+            color: #166534; /* Verde escuro */
+            font-weight: 600;
+        }
+        .feedback-table .incorrect-answer {
+            color: #991b1b; /* Vermelho escuro */
+            font-weight: 600;
+            text-decoration: line-through;
+        }
+        
+        /* Estilos de Impressão */
+        @media print {
+            body {
+                background-color: #ffffff;
+                margin: 0;
+            }
+            .container {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+                border: none;
+                box-shadow: none;
+            }
+            /* Esconder tudo exceto o certificado */
+            body * {
+                visibility: hidden;
+            }
+            #certificate, #certificate * {
+                visibility: visible;
+            }
+            #result-section {
+                visibility: visible;
+            }
+            #certificate {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 1rem;
+                border: 10px solid #262626 !important;
+                background-color: #fffbeb !important;
+                -webkit-print-color-adjust: exact; /* Chrome/Safari */
+                color-adjust: exact; /* standards */
+                box-shadow: none;
+            }
+            /* Esconder botões e abas na impressão */
+            .btn, #print-btn, .tabs-container, #correction-details {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+
+    <div class="container">
+
+        <!-- Secção de Boas-Vindas -->
+        <div id="welcome-section" class="section-card">
+            <h2 class="text-2xl font-semibold mb-4">Ficha de Inglês Interativa (6º Ano)</h2>
+            <p class="mb-4">Este teste irá avaliar os teus conhecimentos de Inglês. No final, terás uma correção automática (incluindo IA!) e um certificado.</p>
+            <div class="space-y-4">
+                <div>
+                    <label for="student-name" class="block text-sm font-medium">Nome Completo:</label>
+                    <input type="text" id="student-name" class="mt-1" placeholder="O teu nome">
+                </div>
+                <div>
+                    <label for="student-year" class="block text-sm font-medium">Ano:</label>
+                    <input type="text" id="student-year" class="mt-1" placeholder="Ex: 6º">
+                </div>
+                <div>
+                    <label for="student-class" class="block text-sm font-medium">Turma:</label>
+                    <input type="text" id="student-class" class="mt-1" placeholder="Ex: A">
+                </div>
+                <p id="welcome-error" class="text-red-600 text-sm hidden"></p>
+                <button id="start-btn" class="btn w-full">Começar o Teste</button>
+            </div>
+        </div>
+
+        <!-- Secção 1: Reading Comprehension -->
+        <div id="reading-section" class="section-card hidden">
+            <h2 class="text-2xl font-semibold mb-4">Section 1: Reading Comprehension</h2>
+            
+            <div class="mb-6 p-4 bg-gray-50 rounded-lg border">
+                <h3 class="font-semibold text-lg mb-2">Read the text.</h3>
+                <img src="https" alt="Placeholder para João Alves" class="rounded-md mb-4 w-full h-auto object-cover" onerror="this.src='https://placehold.co/800x200/262626/eab308?text=Jo%C3%A3o+Alves+-+The+Stranger+Teacher'">
+                <p class="mb-2">This is João Alves. He is a 'strange' teacher from Portugal. His birthday is on 31st October.</p>
+                <p class="mb-2">He lives in Hawkins, Indiana, with his dog, 'Demogorgon'. 'Demogorgon' is a big black dog, and he is very loyal.</p>
+                <p class="mb-2">He has got one sister, 'Eleven'. She is not tall, she is <strong>short</strong>. She is also <strong>slim</strong> (not fat). She has got <strong>long</strong> dark hair. João and Eleven are great friends.</p>
+                <p class="mb-2">He's tall and thin and he has got short brown hair and green eyes. He's very intelligent and mysterious. He <strong>loves</strong> eating waffles and, in his free time, he enjoys playing Dungeons & Dragons and listening to 80s music.</p>
+            </div>
+
+            <div class="question-group">
+                <span class="question-label">A. Find the opposites for the following words in the 3rd or 4th paragraph:</span>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="q1-opp-1" class="block text-sm">1. tall</label>
+                        <input type="text" id="q1-opp-1" class="mt-1">
+                    </div>
+                    <div>
+                        <label for="q1-opp-2" class="block text-sm">2. fat</label>
+                        <input type="text" id="q1-opp-2" class="mt-1">
+                    </div>
+                    <div>
+                        <label for="q1-opp-3" class="block text-sm">3. short (hair)</label>
+                        <input type="text" id="q1-opp-3" class="mt-1">
+                    </div>
+                    <div>
+                        <label for="q1-opp-4" class="block text-sm">4. hates</label>
+                        <input type="text" id="q1-opp-4" class="mt-1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <span class="question-label">B. Complete the sentences according to the text.</span>
+                <p class="mb-2">1. João is from Portugal, so he is <input type="text" id="q1-fill-1" class="inline w-auto"></p>
+                <p class="mb-2">2. His dog’s name is <input type="text" id="q1-fill-2" class="inline w-auto"></p>
+                <p class="mb-2">3. He has got <input type="text" id="q1-fill-3" class="inline w-auto"> hair.</p>
+                <p class="mb-2">4. He has got <input type="text" id="q1-fill-4" class="inline w-auto"> sister.</p>
+                <p class="mb-2">5. When he has time, he likes <input type="text" id="q1-fill-5" class="inline w-auto">.</p>
+            </div>
+
+            <div class="question-group">
+                <span class="question-label">C. Answer the following questions about the text. (Short answers)</span>
+                <label for="q1-ans-1" class="block mt-2">1. When is João’s birthday?</label>
+                <input type="text" id="q1-ans-1">
+                <label for="q1-ans-2" class="block mt-2">2. Where does he live?</label>
+                <input type="text" id="q1-ans-2">
+                <label for="q1-ans-3" class="block mt-2">3. What is his sister's name?</label>
+                <input type="text" id="q1-ans-3">
+                <label for="q1-ans-4" class="block mt-2">4. Who is Demogorgon?</label>
+                <input type="text" id="q1-ans-4">
+                <label for="q1-ans-5" class="block mt-2">5. What’s his favourite type of food?</label>
+                <input type="text" id="q1-ans-5">
+            </div>
+
+            <button class="btn w-full next-btn" data-next="grammar-section">Próxima Secção</button>
+        </div>
+
+        <!-- Secção 2: Grammar -->
+        <div id="grammar-section" class="section-card hidden">
+            <h2 class="text-2xl font-semibold mb-4">Section 2: Grammar</h2>
+            
+            <div class="question-group">
+                <span class="question-label">A. Complete with the correct Personal Pronoun or Possessive Determiner.</span>
+                <p class="mb-2">1. (<input type="text" id="q2-gram-1" class="inline w-auto">) are in the classroom. This is (<input type="text" id="q2-gram-2" class="inline w-auto">) teacher, Mr. João.</p>
+                <p class="mb-2">2. This is Carolina. (<input type="text" id="q2-gram-3" class="inline w-auto">) loves Benfica. It's (<input type="text" id="q2-gram-4" class="inline w-auto">) favourite club.</p>
+                <p class="mb-2">3. That is Hugo. (<input type="text" id="q2-gram-5" class="inline w-auto">) has got a new bike. (<input type="text" id="q2-gram-6" class="inline w-auto">) bike is red.</p>
+                <p class="mb-2">4. Matilde and Miguel are friends. (<input type="text" id="q2-gram-8" class="inline w-auto">) are very nice. (<input type="text" id="q2-gram-7" class="inline w-auto">) favourite hobby is reading.</p>
+            </div>
+
+            <div class="question-group">
+                <span class="question-label">B. Complete with the verb To Be or To Have Got (Present Simple).</span>
+                <p class="mb-2">1. Mara (<input type="text" id="q2-verb-1" class="inline w-auto">) my best friend. She (<input type="text" id="q2-verb-2" class="inline w-auto">) very funny.</p>
+                <p class="mb-2">2. Sara and I (<input type="text" id="q2-verb-3" class="inline w-auto">) in the same class. We (<input type="text" id="q2-verb-6" class="inline w-auto">) a cool teacher.</p>
+                <p class="mb-2">3. Simão (<input type="text" id="q2-verb-4" class="inline w-auto">) (not) from Barreiro, he (<input type="text" id="q2-verb-5" class="inline w-auto">) from Fabril.</p>
+                <p class="mb-2">4. Rita (<input type="text" id="q2-verb-7" class="inline w-auto">) scared of clowns. She (<input type="text" id="q2-verb-8" class="inline w-auto">) (not) very brave.</p>
+                <p class="mb-2">5. Íris (<input type="text" id="q2-verb-9" class="inline w-auto">) a crown. She is the Queen of Hearts.</p>
+                <p class="mb-2">6. <input type="text" id="q2-verb-10" class="inline w-auto"> you <input type="text" id="q2-verb-11" class="inline w-auto"> any brothers or sisters?</p>
+            </div>
+
+            <button class="btn w-full next-btn" data-next="vocabulary-section">Próxima Secção</button>
+        </div>
+
+        <!-- Secção 3: Vocabulary -->
+        <div id="vocabulary-section" class="section-card hidden">
+            <h2 class="text-2xl font-semibold mb-4">Section 3: Vocabulary</h2>
+            
+            <div class="question-group">
+                <span class="question-label">A. Match the descriptions to the 'Stranger Things' characters.</span>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <!-- Imagens -->
+                    <div>
+                        <img src="https://profjoaoav.github.io/English/dustin.jpg" alt="Dustin" class="rounded-lg shadow-md h-48 w-full object-cover object-top" onerror="this.src='https://placehold.co/200x280/e0e0e0/555?text=Dustin'">
+                        <p class="text-center font-semibold mt-2">Dustin</p>
+                    </div>
+                    <div>
+                        <img src="https://profjoaoav.github.io/English/eleven.jpg" alt="Eleven" class="rounded-lg shadow-md h-48 w-full object-cover object-top" onerror="this.src='https://placehold.co/200x280/e0e0e0/555?text=Eleven'">
+                        <p class="text-center font-semibold mt-2">Eleven</p>
+                    </div>
+                    <div>
+                        <img src="https://profjoaoav.github.io/English/eddie.jpg" alt="Eddie" class="rounded-lg shadow-md h-48 w-full object-cover object-top" onerror="this.src='https://placehold.co/200x280/e0e0e0/555?text=Eddie'">
+                        <p class="text-center font-semibold mt-2">Eddie</p>
+                    </div>
+                    <div>
+                        <img src="https://profjoaoav.github.io/English/max.jpg" alt="Max" class="rounded-lg shadow-md h-48 w-full object-cover object-top" onerror="this.src='https://placehold.co/200x280/e0e0e0/555?text=Max'">
+                        <p class="text-center font-semibold mt-2">Max</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Descrições com Selects -->
+                    <div class="flex items-center space-x-2">
+                        <label for="q3-match-1" class="flex-grow">1. He is wearing a cap. He has got curly hair.</label>
+                        <select id="q3-match-1" class="w-32">
+                            <option value="">Select...</option>
+                            <option value="Dustin">Dustin</option>
+                            <option value="Eleven">Eleven</option>
+                            <option value="Eddie">Eddie</option>
+                            <option value="Max">Max</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label for="q3-match-2" class="flex-grow">2. She has got long, red hair. She looks angry.</label>
+                        <select id="q3-match-2" class="w-32">
+                            <option value="">Select...</option>
+                            <option value="Dustin">Dustin</option>
+                            <option value="Eleven">Eleven</option>
+                            <option value="Eddie">Eddie</option>
+                            <option value="Max">Max</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label for="q3-match-3" class="flex-grow">3. He has got long, dark, wavy hair. He plays the guitar.</label>
+                        <select id="q3-match-3" class="w-32">
+                            <option value="">Select...</option>
+                            <option value="Dustin">Dustin</option>
+                            <option value="Eleven">Eleven</option>
+                            <option value="Eddie">Eddie</option>
+                            <option value="Max">Max</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label for="q3-match-4" class="flex-grow">4. She has got short, dark hair. She looks powerful.</label>
+                        <select id="q3-match-4" class="w-32">
+                            <option value="">Select...</option>
+                            <option value="Dustin">Dustin</option>
+                            <option value="Eleven">Eleven</option>
+                            <option value="Eddie">Eddie</option>
+                            <option value="Max">Max</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <span class="question-label">B. Select the 8 words that are Personality Adjectives.</span>
+                <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                    <!-- Lista de palavras como checkboxes -->
+                    <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100"><input type="checkbox" value="Brave" class="q3-adj"> <span>Brave</span></label>
+                    <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100"><input type="checkbox" value="Trousers" class="q3-adj"> <span>Trousers</span></label>
+                    <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100"><input type="checkbox" value="Loyal" class="q3-adj"> <span>Loyal</span></label>
+                    <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100"><input type="checkbox" value="Wavy" class="q3-adj"> <span>Wavy</span></label>
+                    <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100"><input type="checkbox" value="Funny" class="q3-adj"> <span>Funny</span></label>
+                    <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100"><input type="checkbox" value="Cheerful" class="q3-adj"> <span>Cheerful</span></label>
+                    <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100"><input type="checkbox" value="Skirt" class="q3-adj"> <span>Skirt</span></label>
+                    <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100"><input type="checkbox" value="Stubborn" class="q3-adj"> <span>Stubborn</span></label>
+                    <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100"><input type="checkbox" value="Hair" class="q3-adj"> <span>Hair</span></label>
+                    <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100"><input type="checkbox" value="Generous" class="q3-adj"> <span>Generous</span></label>
+                    <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100"><input type="checkbox" value="Kind" class="q3-adj"> <span>Kind</span></label>
+                    <label class="flex items-center space-x-2 p-2 rounded-md hover:bg-gray-100"><input type="checkbox" value="Shy" class="q3-adj"> <span>Shy</span></label>
+                </div>
+            </div>
+
+            <button class="btn w-full next-btn" data-next="writing-section">Próxima Secção</button>
+        </div>
+
+        <!-- Secção 4: Writing -->
+        <div id="writing-section" class="section-card hidden">
+            <h2 class="text-2xl font-semibold mb-4">Section 4: Writing</h2>
+            <p class="mb-4">Write a text about your best friend. You can write about Simão from Fabril, Rita who likes clowns, or Íris the Queen of Hearts... or just your real best friend! (80-100 words).</p>
+            
+            <div class="question-group">
+                <label for="q4-writing" class="block text-sm font-medium text-gray-700">My Best Friend</label>
+                <textarea id="q4-writing" rows="10" class="mt-1" placeholder="Start writing here... My best friend's name is..."></textarea>
+                <p id="word-count" class="text-sm text-gray-500 mt-1">Word count: 0</p>
+            </div>
+
+            <button id="submit-btn" class="btn w-full">Submeter e Ver Resultados</button>
+        </div>
+
+        <!-- Secção de Loading -->
+        <div id="loading-section" class="section-card hidden fixed inset-0 bg-white/90 z-50 flex flex-col items-center justify-center">
+            <svg class="animate-spin h-10 w-10 text-yellow-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <h2 class="text-xl font-semibold text-gray-700">A corrigir a tua ficha...</h2>
+            <p class="text-gray-600">A Inteligência Artificial está a ler as tuas respostas.</p>
+        </div>
+
+        <!-- Secção de Resultados -->
+        <div id="result-section" class="section-card hidden">
+            <h2 class="text-2xl font-semibold mb-6 text-center">O Teu Resultado</h2>
+
+            <!-- --- NOVO SISTEMA DE ABAS --- -->
+            <div class="tabs-container mb-4">
+                <button id="cert-tab-btn" class="tab-btn active">Certificado</button>
+                <button id="details-tab-btn" class="tab-btn">Correção Detalhada</button>
+            </div>
+
+            <!-- Conteúdo da Aba: Certificado -->
+            <div id="cert-tab" class="tab-content">
+                <div id="certificate">
+                    <p class="text-center text-lg mb-4">This acknowledges that</p>
+                    <h3 id="cert-name" class="text-center text-3xl font-bold text-yellow-700 mb-4"></h3>
+                    <p class="text-center text-lg mb-4">from class <span id="cert-class" class="font-semibold"></span> (Year <span id="cert-year" class="font-semibold"></span>)</p>
+                    <p class="text-center text-lg mb-6">has successfully completed the Interactive English Test.</p>
+                    
+                    <!-- PONTUAÇÃO ATUALIZADA -->
+                    <p class="text-center text-2xl font-bold mb-4">Média Final: <span id="final-score" class="text-blue-600">0%</span></p>
+                    <div class="mt-6 pt-4 border-t border-yellow-700/50 text-left text-lg space-y-2">
+                        <p><strong>Reading:</strong> <span id="reading-score" class="font-bold text-blue-600">0%</span></p>
+                        <p><strong>Writing:</strong> <span id="writing-score" class="font-bold text-blue-600">0%</span></p>
+                        <p><strong>Grammar & Vocabulary:</strong> <span id="gv-score" class="font-bold text-blue-600">0%</span></p>
+                    </div>
+                    <!-- FIM DA ATUALIZAÇÃO -->
+
+                    <div class="text-center text-sm text-gray-600 mt-8">
+                        <p>Issued on: <span id="cert-date"></span></p>
+                    </div>
+                </div>
+                <button id="print-btn" class="btn w-full mt-4">Imprimir Certificado</button>
+            </div>
+
+            <!-- Conteúdo da Aba: Correção Detalhada -->
+            <div id="details-tab" class="tab-content hidden">
+                <div class="space-y-6">
+                    <!-- Correção de Perguntas Fechadas -->
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800 mb-2">Exercícios Automáticos (Reading, Grammar, Vocab):</h4>
+                        <p class="text-sm mb-3">Pontuação: <span id="auto-score-display" class="font-bold"></span></p>
+                        <div id="auto-feedback" class="overflow-x-auto">
+                            <!-- A tabela será inserida aqui pelo JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Correção IA - Reading -->
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800">Secção 1.C (Reading - Respostas Curtas):</h4>
+                        <div id="reading-feedback-ia" class="mt-2 p-3 bg-gray-50 rounded-md border text-sm"></div>
+                    </div>
+
+                    <!-- Correção IA - Writing -->
+                    <div>
+                        <h4 class="font-semibold text-lg text-gray-800">Secção 4 (Writing - "My Best Friend"):</h4>
+                        <div id="writing-feedback-ia" class="mt-2 p-3 bg-gray-50 rounded-md border text-sm"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- --- FIM DO SISTEMA DE ABAS --- -->
+        </div>
+
+    </div>
+
+    <script type"module">
+        // --- LÓGICA DA API VOLTOU A ESTAR AQUI ---
+        const apiKey = "AIzaSyAV9Dcz-yBBLPEmjBGsx52LMReI9GOUZBI"; // Deixar em branco; será fornecida pelo ambiente
+        const textApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+        
+        // Variáveis Globais
+        const userInfo = { name: "", class: "", year: "" };
+        let allAnswers = {};
+
+        // Iniciar o teste
+        document.getElementById("start-btn").addEventListener("click", () => {
+            const studentName = document.getElementById("student-name").value.trim();
+            const studentClass = document.getElementById("student-class").value.trim();
+            const studentYear = document.getElementById("student-year").value.trim();
+
+            if (!studentName || !studentClass || !studentYear) {
+                const errorEl = document.getElementById("welcome-error");
+                errorEl.textContent = "Por favor, preenche todos os campos para começar.";
+                errorEl.classList.remove("hidden");
+                return;
+            }
+
+            userInfo.name = studentName;
+            userInfo.class = studentClass;
+            userInfo.year = studentYear;
+
+            document.getElementById("welcome-section").classList.add("hidden");
+            document.getElementById("reading-section").classList.remove("hidden");
+        });
+
+        // Navegação entre secções
+        document.querySelectorAll(".next-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                const currentSection = button.closest(".section-card");
+                const nextSectionId = button.dataset.next;
+                
+                if (currentSection && nextSectionId) {
+                    currentSection.classList.add("hidden");
+                    document.getElementById(nextSectionId).classList.remove("hidden");
+                    window.scrollTo(0, 0);
+                }
+            });
+        });
+
+        // Contagem de palavras na Redação
+        document.getElementById("q4-writing").addEventListener("input", () => {
+            const text = document.getElementById("q4-writing").value;
+            const words = text.trim().split(/\s+/).filter(word => word.length > 0);
+            document.getElementById("word-count").textContent = `Word count: ${words.length}`;
+        });
+
+        // --- LÓGICA DAS ABAS (TABS) ---
+        const certTabBtn = document.getElementById("cert-tab-btn");
+        const detailsTabBtn = document.getElementById("details-tab-btn");
+        const certTab = document.getElementById("cert-tab");
+        const detailsTab = document.getElementById("details-tab");
+
+        certTabBtn.addEventListener("click", () => {
+            certTab.classList.remove("hidden");
+            detailsTab.classList.add("hidden");
+            certTabBtn.classList.add("active");
+            detailsTabBtn.classList.remove("active");
+        });
+
+        detailsTabBtn.addEventListener("click", () => {
+            detailsTab.classList.remove("hidden");
+            certTab.classList.add("hidden");
+            detailsTabBtn.classList.add("active");
+            certTabBtn.classList.remove("active");
+        });
+
+        // Submeter o teste
+        document.getElementById("submit-btn").addEventListener("click", async () => {
+            document.getElementById("writing-section").classList.add("hidden");
+            document.getElementById("loading-section").classList.remove("hidden");
+            window.scrollTo(0, 0);
+
+            allAnswers = collectAnswers();
+            
+            // --- CÁLCULO DE PONTUAÇÃO ATUALIZADO ---
+            // 3. Corrigir perguntas automáticas
+            const gvResult = calculateGrammarVocabScore(allAnswers);
+            const readingAutoResult = calculateReadingScore(allAnswers);
+
+            const readingAnswersText = Object.values(allAnswers.readingShort).join("").trim();
+            const writingText = allAnswers.writing.trim();
+
+            // Objeto de erro para a Leitura
+            const defaultReadingError = {
+                score: 0,
+                maxScore: 10,
+                feedbackItems: [{
+                    question: 1, answer: "Erro", points: 0,
+                    justification: "Ocorreu um erro ao corrigir esta secção."
+                }]
+            };
+            // Objeto de erro para a Redação
+            const defaultWritingError = {
+                score: 0, maxScore: 20,
+                feedback: "<p class='text-red-600'>Ocorreu um erro ao tentar corrigir a redação. A pontuação não foi atribuída.</p>"
+            };
+            
+            // 4. Chamar IA
+            let readingIAPromise;
+            if (readingAnswersText.length > 0) {
+                readingIAPromise = assessReadingAnswers(allAnswers.readingShort)
+                    .catch(err => {
+                        console.error("Erro na IA (Reading):", err);
+                        return defaultReadingError;
+                    });
+            } else {
+                readingIAPromise = Promise.resolve({ 
+                    score: 0, 
+                    maxScore: 10, 
+                    feedbackItems: [
+                        {question: 1, answer: "(em branco)", points: 0, justification: "Não respondido."},
+                        {question: 2, answer: "(em branco)", points: 0, justification: "Não respondido."},
+                        {question: 3, answer: "(em branco)", points: 0, justification: "Não respondido."},
+                        {question: 4, answer: "(em branco)", points: 0, justification: "Não respondido."},
+                        {question: 5, answer: "(em branco)", points: 0, justification: "Não respondido."},
+                    ]
+                });
+            }
+
+            let writingPromise;
+            if (writingText.length > 0) {
+                writingPromise = assessWriting(writingText)
+                    .catch(err => {
+                        console.error("Erro na IA (Writing):", err);
+                        return defaultWritingError;
+                    });
+            } else {
+                writingPromise = Promise.resolve({ score: 0, maxScore: 20, feedback: "<p>Não foi escrito nenhum texto.</p>" });
+            }
+            
+            try {
+                const [readingIAResult, writingResult] = await Promise.all([
+                    readingIAPromise,
+                    writingPromise
+                ]);
+
+                // 5. Calcular pontuações FINAIS (EM PERCENTAGEM)
+                
+                // Skill 1: Reading
+                const readingTotalScore = readingAutoResult.score + readingIAResult.score;
+                const readingTotalMax = readingAutoResult.maxScore + readingIAResult.maxScore; // 9 + 10 = 19
+                const readingPercentage = Math.round((readingTotalScore / readingTotalMax) * 100);
+
+                // Skill 2: Writing
+                const writingTotalScore = writingResult.score;
+                const writingTotalMax = writingResult.maxScore; // 20
+                const writingPercentage = Math.round((writingTotalScore / writingTotalMax) * 100);
+
+                // Skill 3: Grammar & Vocab
+                const gvTotalScore = gvResult.score;
+                const gvTotalMax = gvResult.maxScore; // 27
+                const gvPercentage = Math.round((gvTotalScore / gvTotalMax) * 100);
+
+                // Média Final
+                const finalPercentage = Math.round((readingPercentage + writingPercentage + gvPercentage) / 3);
+                
+                // 6. Preencher e mostrar resultados
+                displayResults(
+                    gvResult, 
+                    readingAutoResult, 
+                    readingIAResult, 
+                    writingResult, 
+                    readingPercentage, 
+                    writingPercentage, 
+                    gvPercentage, 
+                    finalPercentage
+                );
+
+            } catch (error) {
+                console.error("Erro no processo de submissão:", error);
+                displayError(error);
+            }
+        });
+
+        // Função para recolher todas as respostas
+        function collectAnswers() {
+            const answers = {
+                readingOpp: {},
+                readingFill: {},
+                readingShort: {},
+                grammarPronouns: {},
+                grammarVerbs: {},
+                vocabMatch: {},
+                vocabAdj: [],
+                writing: ""
+            };
+
+            // Reading
+            document.querySelectorAll('#reading-section input[type="text"]').forEach(input => {
+                const id = input.id;
+                if (id.startsWith("q1-opp-")) answers.readingOpp[id] = input.value;
+                if (id.startsWith("q1-fill-")) answers.readingFill[id] = input.value;
+                if (id.startsWith("q1-ans-")) answers.readingShort[id] = input.value;
+            });
+
+            // Grammar
+            document.querySelectorAll('#grammar-section input[type="text"]').forEach(input => {
+                const id = input.id;
+                if (id.startsWith("q2-gram-")) answers.grammarPronouns[id] = input.value;
+                if (id.startsWith("q2-verb-")) answers.grammarVerbs[id] = input.value;
+            });
+
+            // Vocabulary
+            document.querySelectorAll('#vocabulary-section select').forEach(select => {
+                if (select.id.startsWith("q3-match-")) answers.vocabMatch[select.id] = select.value;
+            });
+            document.querySelectorAll('.q3-adj:checked').forEach(checkbox => {
+                answers.vocabAdj.push(checkbox.value);
+            });
+
+            // Writing
+            answers.writing = document.getElementById("q4-writing").value;
+
+            return answers;
+        }
+
+        // --- FUNÇÃO DE CORREÇÃO SÓ DE GRAMMAR & VOCAB ---
+        function calculateGrammarVocabScore(answers) {
+            let correct = 0;
+            let total = 0;
+            let feedbackItems = []; 
+
+            // Chaves de correção
+            const keys = {
+                "q2-gram-1": { key: "we", text: "Grammar A.1" },
+                "q2-gram-2": { key: "our", text: "Grammar A.1" },
+                "q2-gram-3": { key: "she", text: "Grammar A.2" },
+                "q2-gram-4": { key: "her", text: "Grammar A.2" },
+                "q2-gram-5": { key: "he", text: "Grammar A.3" },
+                "q2-gram-6": { key: "his", text: "Grammar A.3" },
+                "q2-gram-8": { key: "they", text: "Grammar A.4" },
+                "q2-gram-7": { key: "their", text: "Grammar A.4" },
+                
+                "q2-verb-1": { key: "is", text: "Grammar B.1" },
+                "q2-verb-2": { key: "is", text: "Grammar B.1" },
+                "q2-verb-3": { key: "are", text: "Grammar B.2" },
+                "q2-verb-6": { key: "have got", text: "Grammar B.2" },
+                "q2-verb-4": { key: "isn't", text: "Grammar B.3 (neg)" },
+                "q2-verb-5": { key: "is", text: "Grammar B.3" },
+                "q2-verb-7": { key: "is", text: "Grammar B.4" },
+                "q2-verb-8": { key: "isn't", text: "Grammar B.4 (neg)" },
+                "q2-verb-9": { key: "has got", text: "Grammar B.5" },
+                "q2-verb-10": { key: "have", text: "Grammar B.6" },
+                "q2-verb-11": { key: "got", text: "Grammar B.6" },
+                
+                "q3-match-1": { key: "dustin", text: "Vocab A.1 (Dustin)" },
+                "q3-match-2": { key: "max", text: "Vocab A.2 (Max)" },
+                "q3-match-3": { key: "eddie", text: "Vocab A.3 (Eddie)" },
+                "q3-match-4": { key: "eleven", text: "Vocab A.4 (Eleven)" }
+            };
+            const adjKey = ["Brave", "Loyal", "Funny", "Cheerful", "Stubborn", "Generous", "Kind", "Shy"];
+
+            // Função helper para verificar e adicionar feedback
+            function checkAnswer(id, answer, group) {
+                total++;
+                const studentAnswer = (answer || "").trim().toLowerCase();
+                const correctAnswer = keys[id].key;
+                let isCorrect = false;
+                
+                if (id === "q2-verb-4" || id === "q2-verb-8") { // Casos negativos
+                    isCorrect = (studentAnswer === "isn't" || studentAnswer === "is not");
+                } else {
+                    isCorrect = (studentAnswer === correctAnswer);
+                }
+                
+                if (isCorrect) {
+                    correct++;
+                }
+
+                feedbackItems.push({
+                    group: group,
+                    question: keys[id].text,
+                    student: (answer || ""), // Manter a resposta original para mostrar
+                    correct: keys[id].key, // Resposta correta
+                    score: isCorrect ? 1 : 0,
+                    maxScore: 1
+                });
+            }
+
+            // Corrigir todos os grupos de G&V
+            Object.keys(answers.grammarPronouns).forEach(id => checkAnswer(id, answers.grammarPronouns[id], "Gramática (A)"));
+            Object.keys(answers.grammarVerbs).forEach(id => checkAnswer(id, answers.grammarVerbs[id], "Gramática (B)"));
+            Object.keys(answers.vocabMatch).forEach(id => checkAnswer(id, answers.vocabMatch[id], "Vocabulário (A)"));
+
+            // Corrigir Vocab Adjectives (Total 4 pontos)
+            total += 4;
+            let adjCorrect = 0;
+            let adjIncorrect = 0;
+            answers.vocabAdj.forEach(adj => {
+                if (adjKey.includes(adj)) {
+                    adjCorrect++;
+                } else {
+                    adjIncorrect++;
+                }
+            });
+            let adjScore = Math.max(0, (adjCorrect - adjIncorrect) * 0.5);
+            correct += adjScore;
+
+            feedbackItems.push({
+                group: "Vocabulário (B)",
+                question: "Adjetivos de Personalidade",
+                student: `${adjCorrect} corretos, ${adjIncorrect} errados`,
+                correct: "8 adjetivos",
+                score: adjScore,
+                maxScore: 4
+            });
+            
+            return {
+                score: correct,
+                maxScore: total, // Deverá ser 27
+                feedbackItems: feedbackItems
+            };
+        }
+
+        // --- NOVA FUNÇÃO DE CORREÇÃO SÓ DE READING ---
+        function calculateReadingScore(answers) {
+            let correct = 0;
+            let total = 0;
+            let feedbackItems = []; 
+
+            // Chaves de correção
+            const keys = {
+                "q1-opp-1": { key: "short", text: "Oposto de 'tall'" },
+                "q1-opp-2": { key: "slim", text: "Oposto de 'fat'" },
+                "q1-opp-3": { key: "long", text: "Oposto de 'short (hair)'" },
+                "q1-opp-4": { key: "loves", text: "Oposto de 'hates'" },
+                
+                "q1-fill-1": { key: "portuguese", text: "Reading B.1 (nacionalidade)" },
+                "q1-fill-2": { key: "demogorgon", text: "Reading B.2 (nome cão)" },
+                "q1-fill-3": { key: "short brown", text: "Reading B.3 (cabelo)" },
+                "q1-fill-4": { key: "one", text: "Reading B.4 (irmã)" },
+                "q1-fill-5": { key: "playing", text: "Reading B.5 (hobby)" }
+            };
+
+            // Função helper para verificar e adicionar feedback
+            function checkAnswer(id, answer, group) {
+                total++;
+                const studentAnswer = (answer || "").trim().toLowerCase();
+                const correctAnswer = keys[id].key;
+                let isCorrect = false;
+                
+                if (id === "q1-fill-5") { // Caso especial "playing..."
+                    isCorrect = studentAnswer.includes(correctAnswer);
+                } else {
+                    isCorrect = (studentAnswer === correctAnswer);
+                }
+                
+                if (isCorrect) {
+                    correct++;
+                }
+
+                feedbackItems.push({
+                    group: group,
+                    question: keys[id].text,
+                    student: (answer || ""), // Manter a resposta original para mostrar
+                    correct: keys[id].key, // Resposta correta
+                    score: isCorrect ? 1 : 0,
+                    maxScore: 1
+                });
+            }
+
+            // Corrigir todos os grupos de Reading
+            Object.keys(answers.readingOpp).forEach(id => checkAnswer(id, answers.readingOpp[id], "Leitura (A)"));
+            Object.keys(answers.readingFill).forEach(id => checkAnswer(id, answers.readingFill[id], "Leitura (B)"));
+
+            return {
+                score: correct,
+                maxScore: total, // Deverá ser 9
+                feedbackItems: feedbackItems
+            };
+        }
+
+
+        // --- FUNÇÃO DE CHAMADA À API (RE-INTEGRADA) ---
+        async function callGeminiAPI(payload, retries = 3, delay = 1000) {
+            try {
+                const response = await fetch(textApiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    return candidate.content.parts[0].text;
+                } else {
+                    throw new Error("Resposta da IA inválida ou vazia.");
+                }
+
+            } catch (error) {
+                if (retries > 0) {
+                    await new Promise(res => setTimeout(res, delay));
+                    return callGeminiAPI(payload, retries - 1, delay * 2); // Exponential backoff
+                } else {
+                    console.error("Erro final ao chamar API:", error);
+                    throw error;
+                }
+            }
+        }
+
+        // --- FUNÇÃO DE CORREÇÃO IA (RE-INTEGRADA E ATUALIZADA) ---
+        async function assessReadingAnswers(shortAnswers) {
+            const systemPrompt = `És um professor de Inglês a corrigir uma ficha do 6º ano. As perguntas e respostas esperadas (em inglês) são:
+1. When is João's birthday? (Expected: On 31st October / 31st October)
+2. Where does he live? (Expected: In Hawkins, Indiana / Hawkins)
+3. What is his sister's name? (Expected: Eleven)
+4. Who is Demogorgon? (Expected: His dog / João's dog)
+5. What’s his favourite type of food? (Expected: Waffles)
+
+Avalia as 5 respostas do aluno. Atribui 2 pontos por resposta totalmente correta e 1 ponto por parcialmente correta.
+O feedback (em Português) deve ser claro, positivo e explicar a pontuação (0, 1, ou 2).
+
+Formata a resposta como um JSON com este schema:
+{
+  "type": "OBJECT",
+  "properties": {
+    "feedbackItems": {
+      "type": "ARRAY",
+      "items": {
+        "type": "OBJECT",
+        "properties": {
+          "question": { "type": "NUMBER" },
+          "answer": { "type": "STRING" },
+          "points": { "type": "NUMBER" },
+          "justification": { "type": "STRING" }
+        }
+      }
+    },
+    "score": { "type": "NUMBER" }
+  }
+}
+O 'score' deve ser a soma total dos 'points'. O 'answer' deve ser a resposta do aluno.`;
+            
+            let userQuery = "Respostas do Aluno:\n";
+            userQuery += `1. ${shortAnswers['q1-ans-1']}\n`;
+            userQuery += `2. ${shortAnswers['q1-ans-2']}\n`;
+            userQuery += `3. ${shortAnswers['q1-ans-3']}\n`;
+            userQuery += `4. ${shortAnswers['q1-ans-4']}\n`;
+            userQuery += `5. ${shortAnswers['q1-ans-5']}\n`;
+
+            const responseSchema = {
+                type: "OBJECT",
+                properties: {
+                    "feedbackItems": {
+                        "type": "ARRAY",
+                        "items": {
+                            "type": "OBJECT",
+                            "properties": {
+                                "question": { "type": "NUMBER" },
+                                "answer": { "type": "STRING" },
+                                "points": { "type": "NUMBER" },
+                                "justification": { "type": "STRING" }
+                            },
+                            "required": ["question", "answer", "points", "justification"]
+                        }
+                    },
+                    "score": { "type": "NUMBER" }
+                },
+                "required": ["feedbackItems", "score"]
+            };
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: responseSchema
+                }
+            };
+            
+            const jsonString = await callGeminiAPI(payload);
+            const result = JSON.parse(jsonString);
+            
+            return {
+                score: result.score || 0,
+                maxScore: 10,
+                feedbackItems: result.feedbackItems || [] 
+            };
+        }
+
+        // --- FUNÇÃO DE CORREÇÃO IA (RE-INTEGRADA) ---
+        async function assessWriting(writingText) {
+            const systemPrompt = `És um professor de Inglês experiente a corrigir um texto (redação) de um aluno do 6º ano, em Portugal. O tema é "My Best Friend".
+
+Avalia o texto com base nos seguintes critérios (Total 20 pontos):
+1.  **Task Achievement (5 pontos):** Abordou o tema?
+2.  **Vocabulary (5 pontos):** Usou vocabulário relevante?
+3.  **Grammar (5 pontos):** Usou o "To Be" e "Have Got" corretamente?
+4.  **Coherence & Cohesion (5 pontos):** O texto é fácil de ler?
+
+Fornece feedback construtivo em Português. **Sê específico e positivo, focado num aluno do 6º ano. Aponta um ponto positivo e duas coisas específicas a melhorar.**
+Formata a resposta como um JSON:
+{"score": S, "maxScore": 20, "feedback": "<p>Feedback...</p><ul><li>Task: X/5</li><li>Vocab: Y/5</li><li>Grammar: Z/5</li><li>Coherence: W/5</li></ul>"}`;
+            
+            const userQuery = `Texto do Aluno: "${writingText}"`;
+
+            const responseSchema = {
+                type: "OBJECT",
+                properties: {
+                    "score": { "type": "NUMBER" },
+                    "maxScore": { "type": "NUMBER" },
+                    "feedback": { "type": "STRING" }
+                },
+                "required": ["score", "maxScore", "feedback"]
+            };
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: responseSchema
+                }
+            };
+            
+            const jsonString = await callGeminiAPI(payload);
+            return JSON.parse(jsonString);
+        }
+
+        // --- FUNÇÃO displayResults (ATUALIZADA) ---
+        function displayResults(
+            gvResult, 
+            readingAutoResult, 
+            readingIAResult, 
+            writingResult, 
+            readingPercentage, 
+            writingPercentage, 
+            gvPercentage, 
+            finalPercentage
+        ) {
+            // Preencher Certificado
+            document.getElementById("cert-name").textContent = userInfo.name;
+            document.getElementById("cert-class").textContent = userInfo.class;
+            document.getElementById("cert-year").textContent = userInfo.year;
+            // Scores ATUALIZADOS
+            document.getElementById("final-score").textContent = `${finalPercentage}%`;
+            document.getElementById("reading-score").textContent = `${readingPercentage}%`;
+            document.getElementById("writing-score").textContent = `${writingPercentage}%`;
+            document.getElementById("gv-score").textContent = `${gvPercentage}%`;
+
+            document.getElementById("cert-date").textContent = new Date().toLocaleDateString("pt-PT");
+
+            // Preencher Feedback Automático (Tabela)
+            const autoTotalScore = readingAutoResult.score + gvResult.score;
+            const autoTotalMax = readingAutoResult.maxScore + gvResult.maxScore;
+            document.getElementById("auto-score-display").textContent = `${autoTotalScore.toFixed(1)} / ${autoTotalMax} pontos`;
+            
+            // Combinar os dois arrays de feedback para a tabela
+            const allAutoFeedbackItems = [...readingAutoResult.feedbackItems, ...gvResult.feedbackItems];
+
+            let tableHtml = `
+                <table class="feedback-table">
+                    <thead>
+                        <tr>
+                            <th>Exercício</th>
+                            <th>A Tua Resposta</th>
+                            <th>Resposta Correta</th>
+                            <th>Pontos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            let currentGroup = "";
+            allAutoFeedbackItems.forEach(item => {
+                // Adicionar linha de cabeçalho para o grupo
+                if (item.group !== currentGroup) {
+                    tableHtml += `
+                        <tr class="bg-gray-200">
+                            <td colspan="4" class="font-semibold">${item.group}</td>
+                        </tr>
+                    `;
+                    currentGroup = item.group;
+                }
+
+                const isCorrect = item.score === item.maxScore;
+                const rowClass = isCorrect ? 'correct-row' : 'incorrect-row';
+                const studentAnswerClass = isCorrect ? 'correct-answer' : 'incorrect-answer';
+                
+                tableHtml += `
+                    <tr class="${rowClass}">
+                        <td>${item.question}</td>
+                        <td class="answer-col ${studentAnswerClass}">${item.student || "<em>(em branco)</em>"}</td>
+                        <td class="answer-col correct-answer">${item.correct}</td>
+                        <td>${item.score.toFixed(1)} / ${item.maxScore}</td>
+                    </tr>
+                `;
+            });
+
+            tableHtml += `</tbody></table>`;
+            document.getElementById("auto-feedback").innerHTML = tableHtml;
+
+            // Preencher Feedback IA (Reading)
+            let readingFeedbackHtml = `<b>Pontuação IA:</b> ${readingIAResult.score} / ${readingIAResult.maxScore}`;
+            
+            if (readingIAResult.feedbackItems && Array.isArray(readingIAResult.feedbackItems) && readingIAResult.feedbackItems.length > 0) {
+                readingFeedbackHtml += "<ul>";
+                readingIAResult.feedbackItems.forEach(item => {
+                    readingFeedbackHtml += `
+                        <li class="mt-2 p-2 border-b">
+                            <strong>Pergunta ${item.question}</strong> (Resposta: <em>"${item.answer || "em branco"}"</em>)<br>
+                            <strong>Correção:</strong> ${item.justification} (<strong>${item.points} / 2</strong> pontos)
+                        </li>`;
+                });
+                readingFeedbackHtml += "</ul>";
+            }
+            document.getElementById("reading-feedback-ia").innerHTML = readingFeedbackHtml;
+            
+            
+            // Preencher Feedback IA (Writing)
+            document.getElementById("writing-feedback-ia").innerHTML = `<b>Pontuação IA:</b> ${writingResult.score} / ${writingResult.maxScore}<br>${writingResult.feedback}`;
+
+            // Esconder loading e mostrar resultados
+            document.getElementById("loading-section").classList.add("hidden");
+            document.getElementById("result-section").classList.remove("hidden");
+            window.scrollTo(0, 0);
+        }
+
+        // Função para mostrar Erro
+        function displayError(error) {
+            document.getElementById("loading-section").classList.add("hidden");
+            const resultsSection = document.getElementById("result-section");
+            resultsSection.innerHTML = `
+                <h2 class="text-2xl font-semibold mb-4 text-red-600">Erro Crítico</h2>
+                <p class="mb-4">Ocorreu um erro inesperado que impediu a correção da ficha.</p>
+                <p class="mb-4 text-sm bg-gray-100 p-2 rounded-md">Detalhe: ${error.message}</p>
+                <p>Por favor, atualize a página e tente novamente.</p>
+            `;
+            resultsSection.classList.remove("hidden");
+        }
+
+        // Imprimir
+        document.getElementById("print-btn").addEventListener("click", () => {
+            window.print();
+        });
+
+    </script>
+</body>
+</html>

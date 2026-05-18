@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English 6th Grade — Study App</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f5f5f0;color:#1a1a1a;font-size:15px}
+.app{max-width:780px;margin:0 auto;padding:1rem}
+h1{font-size:20px;font-weight:600;margin-bottom:1rem;color:#1a1a1a}
+
+/* NAV */
+.nav{display:flex;gap:6px;margin-bottom:1.5rem;background:#e8e8e2;border-radius:12px;padding:6px}
+.nav-btn{flex:1;padding:9px 6px;border:none;background:transparent;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;color:#666;transition:all .2s}
+.nav-btn.active{background:#fff;color:#1a1a1a;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+
+/* SECTIONS */
+.section{display:none}.section.active{display:block}
+
+/* CARDS */
+.card{background:#fff;border:1px solid #e0e0d8;border-radius:12px;padding:1.1rem 1.3rem;margin-bottom:1rem}
+.card-title{font-size:15px;font-weight:600;margin-bottom:.85rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{font-size:11px;padding:3px 9px;border-radius:6px;font-weight:600}
+.badge-blue{background:#dbeafe;color:#1d4ed8}
+.badge-green{background:#dcfce7;color:#15803d}
+.badge-amber{background:#fef3c7;color:#b45309}
+
+/* STUDY */
+.rule{background:#f8f8f4;border-radius:8px;padding:.6rem .9rem;margin:.35rem 0;font-size:14px;line-height:1.55}
+.rule strong{font-weight:600}
+.examples{display:flex;gap:.75rem;flex-wrap:wrap;margin:.6rem 0}
+.ex{background:#f8f8f4;border-radius:8px;padding:.5rem .75rem;font-size:13px;flex:1;min-width:130px}
+.ex-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#888;margin-bottom:3px}
+
+/* TABS */
+.tab-row{display:flex;gap:6px;margin-bottom:1rem;flex-wrap:wrap}
+.tab{padding:6px 13px;border:1px solid #d0d0c8;border-radius:8px;cursor:pointer;font-size:13px;background:#fff;color:#555;font-weight:600;transition:all .15s}
+.tab.active{background:#1d4ed8;color:#fff;border-color:#1d4ed8}
+.exblock{display:none}.exblock.active{display:block}
+
+/* EXERCISES */
+.q{margin:.7rem 0;font-size:14px;line-height:1.6}
+.qn{font-weight:600;color:#888;margin-right:5px}
+input[type=text].ans{border:1.5px solid #d0d0c8;border-radius:6px;padding:4px 8px;font-size:13px;background:#fff;color:#1a1a1a;width:160px;outline:none}
+input[type=text].ans:focus{border-color:#1d4ed8}
+input[type=text].ans-long{width:100%;display:block;margin-top:5px;padding:6px 8px}
+.check-btn{margin-top:.85rem;padding:8px 18px;border:1.5px solid #d0d0c8;border-radius:8px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:#1a1a1a;transition:all .15s}
+.check-btn:hover{border-color:#1d4ed8;color:#1d4ed8}
+.feedback{margin-top:.55rem;font-size:13px;padding:.55rem .9rem;border-radius:8px;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:#dcfce7;color:#15803d}
+.feedback.err{background:#fee2e2;color:#dc2626}
+.prog{font-size:12px;color:#888;margin-bottom:.4rem}
+.bar{height:6px;background:#e8e8e2;border-radius:3px;margin:.4rem 0;overflow:hidden}
+.fill{height:100%;background:#15803d;border-radius:3px;transition:width .4s}
+
+/* TRUE/FALSE */
+.tf-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin:.5rem 0}
+.tf-lbl{font-size:14px}
+.tf-btns{display:flex;gap:4px}
+.tf-btn{padding:4px 11px;border:1.5px solid #d0d0c8;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;background:#fff;color:#555}
+.tf-btn.selT{background:#dcfce7;color:#15803d;border-color:#15803d}
+.tf-btn.selF{background:#fee2e2;color:#dc2626;border-color:#dc2626}
+input.corr{border:1.5px solid #d0d0c8;border-radius:6px;padding:5px 8px;font-size:13px;background:#fff;color:#1a1a1a;width:100%;margin-top:4px;outline:none}
+input.corr:focus{border-color:#1d4ed8}
+
+/* TEST TEXT */
+.ttext{font-size:14px;line-height:1.75;background:#f8f8f4;border-radius:8px;padding:1rem 1.1rem;margin-bottom:1rem;border-left:4px solid #1d4ed8}
+.slbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#888;margin:1.1rem 0 .5rem}
+
+/* RESULTS */
+.result-top{text-align:center;background:#f8f8f4;border-radius:10px;padding:1.1rem;margin-bottom:1rem}
+.result-top .big{font-size:40px;font-weight:700;color:#1a1a1a}
+.result-top .sub{font-size:14px;color:#666;margin-top:4px}
+.res-row{display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid #e8e8e2;font-size:14px}
+.res-row:last-child{border:none}
+</style>
+</head>
+<body>
+<div class="app">
+<h1>📘 English 6th Grade — Test Prep</h1>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="showSection('study',this)">📚 Study</button>
+  <button class="nav-btn" onclick="showSection('practice',this)">✏️ Practice</button>
+  <button class="nav-btn" onclick="showSection('test',this)">📝 Test</button>
+</div>
+
+<!-- ===== STUDY ===== -->
+<div id="study" class="section active">
+
+  <div class="card">
+    <div class="card-title">📍 Prepositions of place &amp; movement <span class="badge badge-blue">Vocabulary</span></div>
+    <div class="rule"><strong>between A and B</strong> — between the library and the park</div>
+    <div class="rule"><strong>next to / beside</strong> — next to the café</div>
+    <div class="rule"><strong>in front of / behind / opposite</strong> — in front of the school</div>
+    <div class="rule"><strong>inside / outside / on</strong> — inside the restaurant | on the terrace</div>
+    <div class="rule"><strong>along</strong> (movement along a line) — walking along the street</div>
+    <div class="rule"><strong>across</strong> (from one side to the other) — running across the bridge</div>
+    <div class="rule"><strong>into / out of</strong> (movement in/out) — going into the shop</div>
+    <div class="rule"><strong>past / through / near</strong> — cycling past the library | near the forest</div>
+    <div class="examples">
+      <div class="ex"><div class="ex-lbl">Place</div>"The bakery is <em>between</em> the café and the market."</div>
+      <div class="ex"><div class="ex-lbl">Movement</div>"She walked <em>along</em> the river path."</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📈 Comparative of superiority <span class="badge badge-amber">Grammar</span></div>
+    <div class="rule"><strong>Short adjectives:</strong> adjective + <strong>-er than</strong><br>
+      small → smaller than | big → <strong>bigger</strong> than | quiet → quieter than<br>
+      <em>Doubling rule:</em> CVC → double final consonant: big→bigger, hot→hotter</div>
+    <div class="rule"><strong>Long adjectives (2+ syllables):</strong> <strong>more</strong> + adjective + <strong>than</strong><br>
+      comfortable → more comfortable than | beautiful → more beautiful than</div>
+    <div class="rule"><strong>Irregular:</strong> good → <strong>better than</strong> | bad → <strong>worse than</strong> | far → farther/further than</div>
+    <div class="examples">
+      <div class="ex"><div class="ex-lbl">Short</div>"A village is <em>quieter than</em> a city."</div>
+      <div class="ex"><div class="ex-lbl">Long</div>"A train is <em>more comfortable than</em> a bus."</div>
+      <div class="ex"><div class="ex-lbl">Irregular</div>"My score is <em>better than</em> yours."</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏆 Superlative of superiority <span class="badge badge-amber">Grammar</span></div>
+    <div class="rule"><strong>Short adjectives:</strong> <strong>the</strong> + adjective + <strong>-est</strong><br>
+      small → the smallest | big → the biggest | tall → the tallest</div>
+    <div class="rule"><strong>Long adjectives:</strong> <strong>the most</strong> + adjective<br>
+      expensive → the most expensive | spectacular → the most spectacular</div>
+    <div class="rule"><strong>Irregular:</strong> good → <strong>the best</strong> | bad → <strong>the worst</strong> | far → the farthest</div>
+    <div class="examples">
+      <div class="ex"><div class="ex-lbl">Short</div>"This is <em>the tallest</em> tree in the forest."</div>
+      <div class="ex"><div class="ex-lbl">Long</div>"This is <em>the most beautiful</em> village."</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🕐 Past simple: <em>to be</em> &amp; <em>there to be</em> <span class="badge badge-amber">Grammar</span></div>
+    <div class="rule"><strong>To be:</strong><br>
+      I / he / she / it → <em>was</em> | you / we / they → <em>were</em><br>
+      Negative: <em>wasn't / weren't</em> | Question: <em>Was it…? / Were they…?</em></div>
+    <div class="rule"><strong>There to be:</strong><br>
+      Singular → <em>There was</em> (a lake, a library)<br>
+      Plural → <em>There were</em> (skyscrapers, parks)<br>
+      Negative: <em>There wasn't / There weren't</em></div>
+    <div class="examples">
+      <div class="ex"><div class="ex-lbl">Was</div>"The village <em>was</em> peaceful."</div>
+      <div class="ex"><div class="ex-lbl">There was</div>"<em>There was</em> a library."</div>
+      <div class="ex"><div class="ex-lbl">There were</div>"<em>There were</em> lots of trees."</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📖 Reading comprehension tips <span class="badge badge-green">Reading</span></div>
+    <div class="rule">Read the whole text first. Underline key words in each question to find the right part of the text.</div>
+    <div class="rule"><strong>True / False:</strong> Find the sentence in the text. If it's False, write the correct sentence from the text.</div>
+    <div class="rule"><strong>Questions:</strong> Answer in a full sentence. Use the same verb tense as the question.</div>
+    <div class="rule"><strong>Find in the text:</strong> Copy only the place name — not a whole sentence.</div>
+  </div>
+
+</div>
+
+<!-- ===== PRACTICE ===== -->
+<div id="practice" class="section">
+  <div class="tab-row">
+    <button class="tab active" onclick="showEx('prep',this)">Prepositions</button>
+    <button class="tab" onclick="showEx('comp',this)">Comparative</button>
+    <button class="tab" onclick="showEx('sup',this)">Superlative</button>
+    <button class="tab" onclick="showEx('past',this)">Past <em>to be</em></button>
+    <button class="tab" onclick="showEx('read',this)">Reading</button>
+  </div>
+
+  <!-- Prepositions -->
+  <div id="prep" class="exblock active">
+    <div class="card">
+      <div class="card-title">Prepositions of place &amp; movement</div>
+      <div class="prog" id="prep-prog">0 / 5 correct</div>
+      <div class="bar"><div class="fill" id="prep-bar" style="width:0%"></div></div>
+      <div class="q"><span class="qn">1.</span> The cinema is _____ <input type="text" class="ans" id="p1" placeholder="preposition"> the park and the hotel.</div>
+      <div class="q"><span class="qn">2.</span> The children are running <input type="text" class="ans" id="p2" placeholder="preposition"> the bridge.</div>
+      <div class="q"><span class="qn">3.</span> The old man is sitting <input type="text" class="ans" id="p3" placeholder="preposition"> the café.</div>
+      <div class="q"><span class="qn">4.</span> The school is <input type="text" class="ans" id="p4" placeholder="preposition"> the library.</div>
+      <div class="q"><span class="qn">5.</span> She is walking <input type="text" class="ans" id="p5" placeholder="preposition"> the street.</div>
+      <button class="check-btn" onclick="checkPrep()">Check answers</button>
+      <div class="feedback" id="prep-fb"></div>
+    </div>
+  </div>
+
+  <!-- Comparative -->
+  <div id="comp" class="exblock">
+    <div class="card">
+      <div class="card-title">Comparative of superiority</div>
+      <div class="prog" id="comp-prog">0 / 5 correct</div>
+      <div class="bar"><div class="fill" id="comp-bar" style="width:0%"></div></div>
+      <div class="q"><span class="qn">1.</span> A farmhouse is <input type="text" class="ans" id="c1" placeholder="(old)"> a flat.</div>
+      <div class="q"><span class="qn">2.</span> The river is <input type="text" class="ans" id="c2" placeholder="(long)"> the lake.</div>
+      <div class="q"><span class="qn">3.</span> Walking is <input type="text" class="ans" id="c3" placeholder="(slow)"> cycling.</div>
+      <div class="q"><span class="qn">4.</span> Summer is <input type="text" class="ans" id="c4" placeholder="(hot)"> spring.</div>
+      <div class="q"><span class="qn">5.</span> The market is <input type="text" class="ans" id="c5" placeholder="(popular)"> the library.</div>
+      <button class="check-btn" onclick="checkComp()">Check answers</button>
+      <div class="feedback" id="comp-fb"></div>
+    </div>
+  </div>
+
+  <!-- Superlative -->
+  <div id="sup" class="exblock">
+    <div class="card">
+      <div class="card-title">Superlative of superiority</div>
+      <div class="prog" id="sup-prog">0 / 5 correct</div>
+      <div class="bar"><div class="fill" id="sup-bar" style="width:0%"></div></div>
+      <div class="q"><span class="qn">1.</span> This is <input type="text" class="ans" id="s1" placeholder="(quiet)"> village in the country.</div>
+      <div class="q"><span class="qn">2.</span> It was <input type="text" class="ans" id="s2" placeholder="(good)"> day of the summer.</div>
+      <div class="q"><span class="qn">3.</span> This is <input type="text" class="ans" id="s3" placeholder="(big)"> forest in the region.</div>
+      <div class="q"><span class="qn">4.</span> She is <input type="text" class="ans" id="s4" placeholder="(tall)"> girl in the class.</div>
+      <div class="q"><span class="qn">5.</span> This is <input type="text" class="ans" id="s5" placeholder="(bad)"> weather of the year.</div>
+      <button class="check-btn" onclick="checkSup()">Check answers</button>
+      <div class="feedback" id="sup-fb"></div>
+    </div>
+  </div>
+
+  <!-- Past to be -->
+  <div id="past" class="exblock">
+    <div class="card">
+      <div class="card-title">Past simple: <em>to be</em> &amp; <em>there to be</em></div>
+      <div class="prog" id="past-prog">0 / 6 correct</div>
+      <div class="bar"><div class="fill" id="past-bar" style="width:0%"></div></div>
+      <div class="q"><span class="qn">1.</span> The village <input type="text" class="ans" id="b1" placeholder="was/were"> very peaceful.</div>
+      <div class="q"><span class="qn">2.</span> <input type="text" class="ans" id="b2" placeholder="There was/were"> a beautiful lake near the farm.</div>
+      <div class="q"><span class="qn">3.</span> The children <input type="text" class="ans" id="b3" placeholder="was/were"> very happy.</div>
+      <div class="q"><span class="qn">4.</span> <input type="text" class="ans" id="b4" placeholder="There was/were"> lots of trees in the forest.</div>
+      <div class="q"><span class="qn">5.</span> <input type="text" class="ans" id="b5" placeholder="There was/were (not)"> a cinema in the village.</div>
+      <div class="q"><span class="qn">6.</span> I <input type="text" class="ans" id="b6" placeholder="was/were"> very excited about the trip.</div>
+      <button class="check-btn" onclick="checkPast()">Check answers</button>
+      <div class="feedback" id="past-fb"></div>
+    </div>
+  </div>
+
+  <!-- Reading practice -->
+  <div id="read" class="exblock">
+    <div class="card">
+      <div class="card-title">Reading comprehension practice</div>
+      <div class="ttext">
+        Tom's grandparents lived in a little coastal village called Sandport. It was a colourful and lively place surrounded by cliffs and a wide sandy beach. Their cottage had three bedrooms and a small garden with a hammock where they loved to relax. In Sandport, on Friday evenings, the locals used to gather at the harbour and watch the fishing boats come in. There was a charming little art gallery that Tom's sister adored, but there wasn't a sports complex. On Saturday mornings, they often went for a swim and then the children built sandcastles on the beach. There wasn't a shopping mall, but every spring there was a colourful flower festival in the village square.
+      </div>
+      <div class="slbl">A. Find in the text places where:</div>
+      <div class="q"><span class="qn">1.</span> You can swim — <input type="text" class="ans" id="r1" placeholder="answer"></div>
+      <div class="q"><span class="qn">2.</span> You can see art — <input type="text" class="ans" id="r2" placeholder="answer"></div>
+      <div class="q"><span class="qn">3.</span> There is a festival — <input type="text" class="ans" id="r3" placeholder="answer"></div>
+
+      <div class="slbl">B. True or False?</div>
+      <div class="tf-row"><div class="tf-lbl">1. Sandport is a large inland city.</div><div class="tf-btns"><button class="tf-btn" onclick="setTF(this,'rTF1','T')">T</button><button class="tf-btn" onclick="setTF(this,'rTF1','F')">F</button></div></div>
+      <input type="hidden" id="rTF1">
+      <div class="tf-row"><div class="tf-lbl">2. The cottage had three bedrooms.</div><div class="tf-btns"><button class="tf-btn" onclick="setTF(this,'rTF2','T')">T</button><button class="tf-btn" onclick="setTF(this,'rTF2','F')">F</button></div></div>
+      <input type="hidden" id="rTF2">
+      <div class="tf-row"><div class="tf-lbl">3. They watched the boats on Saturday mornings.</div><div class="tf-btns"><button class="tf-btn" onclick="setTF(this,'rTF3','T')">T</button><button class="tf-btn" onclick="setTF(this,'rTF3','F')">F</button></div></div>
+      <input type="hidden" id="rTF3">
+      <button class="check-btn" onclick="checkRead()">Check answers</button>
+      <div class="feedback" id="read-fb"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TEST ===== -->
+<div id="test" class="section">
+  <div id="test-form">
+    <div class="card">
+      <div class="card-title" style="font-size:16px">📖 Reading Comprehension</div>
+      <div class="ttext">
+        Leo's aunt and uncle lived in a peaceful mountain village called Pinehaven. It was a small and cosy place surrounded by pine forests and a sparkling river. Their house was a wooden chalet with five bedrooms and a large terrace where the whole family could enjoy breakfast together. In Pinehaven, on Saturday mornings, the villagers used to visit the weekly craft fair and buy handmade pottery, candles, and woollen scarves. There was a wonderful little bookshop that Leo adored, but there wasn't a swimming pool. On Sunday afternoons, they usually went hiking in the forest and then the children played by the river. There wasn't a cinema, but every winter there was a spectacular ice sculpture competition in the village square.<br><br>
+        There was a gorgeous mountain lake a short walk away where they loved kayaking in the summer and they sometimes had picnics on the lakeside meadow. Those were magical days filled with crisp mountain air, pine scent, and the sound of the river!
+      </div>
+
+      <div class="slbl">A. Find in the text places where:</div>
+      <div class="q"><span class="qn">1.</span> You can kayak — <input type="text" class="ans" id="ta1" placeholder="answer"></div>
+      <div class="q"><span class="qn">2.</span> You can play — <input type="text" class="ans" id="ta2" placeholder="answer"></div>
+      <div class="q"><span class="qn">3.</span> You can watch an ice competition — <input type="text" class="ans" id="ta3" placeholder="answer"></div>
+      <div class="q"><span class="qn">4.</span> You can buy a book — <input type="text" class="ans" id="ta4" placeholder="answer"></div>
+      <div class="q"><span class="qn">5.</span> You can buy handmade things — <input type="text" class="ans" id="ta5" placeholder="answer"></div>
+
+      <div class="slbl">B. True (T) or False (F)? Correct the false ones.</div>
+      <div class="tf-row"><div class="tf-lbl">1. Pinehaven is a large city.</div><div class="tf-btns"><button class="tf-btn" onclick="setTF(this,'tTF1','T')">T</button><button class="tf-btn" onclick="setTF(this,'tTF1','F')">F</button></div></div>
+      <input type="hidden" id="tTF1"><input class="corr" id="tTF1c" placeholder="Correction if false…">
+      <div class="tf-row" style="margin-top:.5rem"><div class="tf-lbl">2. The chalet had five bedrooms.</div><div class="tf-btns"><button class="tf-btn" onclick="setTF(this,'tTF2','T')">T</button><button class="tf-btn" onclick="setTF(this,'tTF2','F')">F</button></div></div>
+      <input type="hidden" id="tTF2"><input class="corr" id="tTF2c" placeholder="Correction if false…">
+      <div class="tf-row" style="margin-top:.5rem"><div class="tf-lbl">3. They visited the craft fair on Sundays.</div><div class="tf-btns"><button class="tf-btn" onclick="setTF(this,'tTF3','T')">T</button><button class="tf-btn" onclick="setTF(this,'tTF3','F')">F</button></div></div>
+      <input type="hidden" id="tTF3"><input class="corr" id="tTF3c" placeholder="Correction if false…">
+      <div class="tf-row" style="margin-top:.5rem"><div class="tf-lbl">4. There was a swimming pool in Pinehaven.</div><div class="tf-btns"><button class="tf-btn" onclick="setTF(this,'tTF4','T')">T</button><button class="tf-btn" onclick="setTF(this,'tTF4','F')">F</button></div></div>
+      <input type="hidden" id="tTF4"><input class="corr" id="tTF4c" placeholder="Correction if false…">
+      <div class="tf-row" style="margin-top:.5rem"><div class="tf-lbl">5. They loved kayaking in the summer.</div><div class="tf-btns"><button class="tf-btn" onclick="setTF(this,'tTF5','T')">T</button><button class="tf-btn" onclick="setTF(this,'tTF5','F')">F</button></div></div>
+      <input type="hidden" id="tTF5"><input class="corr" id="tTF5c" placeholder="Correction if false…">
+
+      <div class="slbl">C. Answer the questions.</div>
+      <div class="q"><span class="qn">1.</span> Where did Leo's aunt and uncle live?<input type="text" class="ans ans-long" id="tc1" placeholder="Write your answer…"></div>
+      <div class="q"><span class="qn">2.</span> What was the house like?<input type="text" class="ans ans-long" id="tc2" placeholder="Write your answer…"></div>
+      <div class="q"><span class="qn">3.</span> What did the villagers do on Saturday mornings?<input type="text" class="ans ans-long" id="tc3" placeholder="Write your answer…"></div>
+      <div class="q"><span class="qn">4.</span> Was there a cinema in Pinehaven?<input type="text" class="ans ans-long" id="tc4" placeholder="Write your answer…"></div>
+      <div class="q"><span class="qn">5.</span> What happened every winter?<input type="text" class="ans ans-long" id="tc5" placeholder="Write your answer…"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title" style="font-size:16px">✏️ Vocabulary / Grammar</div>
+
+      <div class="slbl">A. Complete with the correct Preposition of Place or Movement.</div>
+      <div class="q"><span class="qn">1.</span> The bookshop is <input type="text" class="ans" id="ga1" placeholder="preposition"> the craft fair and the chalet.</div>
+      <div class="q"><span class="qn">2.</span> Leo is hiking <input type="text" class="ans" id="ga2" placeholder="preposition"> the forest path.</div>
+      <div class="q"><span class="qn">3.</span> The family is sitting <input type="text" class="ans" id="ga3" placeholder="preposition"> the terrace.</div>
+      <div class="q"><span class="qn">4.</span> The lake is <input type="text" class="ans" id="ga4" placeholder="preposition"> the pine forest.</div>
+      <div class="q"><span class="qn">5.</span> The children ran <input type="text" class="ans" id="ga5" placeholder="preposition"> the bridge to reach the meadow.</div>
+
+      <div class="slbl">B. Comparative of Superiority — complete with the adjective in brackets.</div>
+      <div class="q"><span class="qn">1.</span> Mountain air is <input type="text" class="ans" id="gb1" placeholder="(fresh)"> city air.</div>
+      <div class="q"><span class="qn">2.</span> A chalet is <input type="text" class="ans" id="gb2" placeholder="(cosy)"> an apartment.</div>
+      <div class="q"><span class="qn">3.</span> Kayaking is <input type="text" class="ans" id="gb3" placeholder="(exciting)"> walking.</div>
+
+      <div class="slbl">C. Superlative of Superiority — complete with the adjective in brackets.</div>
+      <div class="q"><span class="qn">1.</span> This is <input type="text" class="ans" id="gc1" placeholder="(spectacular)"> event of the winter.</div>
+      <div class="q"><span class="qn">2.</span> It is <input type="text" class="ans" id="gc2" placeholder="(tall)"> pine tree in the forest.</div>
+      <div class="q"><span class="qn">3.</span> That was <input type="text" class="ans" id="gc3" placeholder="(good)"> day of the holiday.</div>
+
+      <div class="slbl">D. Past Simple of <em>to be</em> or <em>there to be</em>.</div>
+      <div class="q"><span class="qn">1.</span> Pinehaven <input type="text" class="ans" id="gd1" placeholder="was/were"> a beautiful village. The people <input type="text" class="ans" id="gd1b" placeholder="was/were"> very welcoming.</div>
+      <div class="q"><span class="qn">2.</span> <input type="text" class="ans" id="gd2" placeholder="There was/were"> tall pine trees everywhere and <input type="text" class="ans" id="gd2b" placeholder="there was/were"> also a frozen lake in winter.</div>
+      <div class="q"><span class="qn">3.</span> At the craft fair, <input type="text" class="ans" id="gd3" placeholder="there was/were (not)"> any food stalls, but <input type="text" class="ans" id="gd3b" placeholder="there was/were"> many artists selling their work.</div>
+
+      <button class="check-btn" style="margin-top:1.1rem;padding:10px 24px;font-size:14px;background:#1d4ed8;color:#fff;border-color:#1d4ed8" onclick="gradeTest()">Submit test &amp; see results →</button>
+    </div>
+  </div>
+
+  <div id="test-results" style="display:none">
+    <div class="card">
+      <div class="result-top">
+        <div class="big" id="res-score">—</div>
+        <div class="sub" id="res-label">—</div>
+      </div>
+      <div id="res-rows"></div>
+      <div id="corrections-block" style="margin-top:.75rem"></div>
+      <button class="check-btn" style="margin-top:.85rem" onclick="resetTest()">Try again</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+function showSection(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function showEx(id,btn){
+  document.querySelectorAll('.exblock').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+function setTF(btn,fid,val){
+  document.getElementById(fid).value=val;
+  btn.closest('.tf-btns').querySelectorAll('.tf-btn').forEach(b=>b.className='tf-btn');
+  btn.classList.add(val==='T'?'selT':'selF');
+}
+function norm(s){return(s||'').trim().toLowerCase().replace(/\s+/g,' ')}
+function match(val,exp){
+  const v=norm(val);
+  if(Array.isArray(exp))return exp.some(e=>v===norm(e)||v.includes(norm(e)));
+  return v===norm(exp)||v.includes(norm(exp));
+}
+function updateBar(pfx,ok,tot){
+  document.getElementById(pfx+'-prog').textContent=ok+' / '+tot+' correct';
+  document.getElementById(pfx+'-bar').style.width=Math.round(ok/tot*100)+'%';
+}
+function showFb(id,ok,tot,msgs){
+  const el=document.getElementById(id);
+  el.className='feedback show '+(ok===tot?'ok':'err');
+  el.innerHTML=ok===tot?'✓ All correct! Well done!':'Score: '+ok+'/'+tot+(msgs.length?' — '+msgs.join(' | '):'');
+}
+function markInput(id,correct){
+  const el=document.getElementById(id);
+  if(el)el.style.borderColor=correct?'#15803d':'#dc2626';
+}
+
+function checkPrep(){
+  const qs=[['p1',['between']],['p2',['across']],['p3',['outside','in front of','next to']],['p4',['next to','opposite','beside']],['p5',['along']]];
+  let ok=0,msgs=[];
+  qs.forEach(([id,ans])=>{const c=match(document.getElementById(id).value,ans);if(c)ok++;markInput(id,c);if(!c)msgs.push(id.replace('p','')+': '+ans[0])});
+  updateBar('prep',ok,5);showFb('prep-fb',ok,5,msgs);
+}
+function checkComp(){
+  const qs=[['c1',['older than']],['c2',['longer than']],['c3',['slower than']],['c4',['hotter than']],['c5',['more popular than']]];
+  let ok=0,msgs=[];
+  qs.forEach(([id,ans])=>{const c=match(document.getElementById(id).value,ans);if(c)ok++;markInput(id,c);if(!c)msgs.push(id.replace('c','')+': '+ans[0])});
+  updateBar('comp',ok,5);showFb('comp-fb',ok,5,msgs);
+}
+function checkSup(){
+  const qs=[['s1',['the quietest']],['s2',['the best']],['s3',['the biggest']],['s4',['the tallest']],['s5',['the worst']]];
+  let ok=0,msgs=[];
+  qs.forEach(([id,ans])=>{const c=match(document.getElementById(id).value,ans);if(c)ok++;markInput(id,c);if(!c)msgs.push(id.replace('s','')+': '+ans[0])});
+  updateBar('sup',ok,5);showFb('sup-fb',ok,5,msgs);
+}
+function checkPast(){
+  const qs=[['b1','was'],['b2','there was'],['b3','were'],['b4','there were'],['b5',"there wasn't"],['b6','was']];
+  let ok=0,msgs=[];
+  qs.forEach(([id,ans])=>{const c=match(document.getElementById(id).value,ans);if(c)ok++;markInput(id,c);if(!c)msgs.push(id.replace('b','')+': '+ans)});
+  updateBar('past',ok,6);showFb('past-fb',ok,6,msgs);
+}
+function checkRead(){
+  let ok=0,msgs=[];
+  const a1=match(document.getElementById('r1').value,['beach','sandy beach']);if(a1)ok++;else msgs.push('A1: the beach');
+  const a2=match(document.getElementById('r2').value,['art gallery','the art gallery']);if(a2)ok++;else msgs.push('A2: the art gallery');
+  const a3=match(document.getElementById('r3').value,['village square','the village square']);if(a3)ok++;else msgs.push('A3: the village square');
+  const tf1=document.getElementById('rTF1').value==='F';if(tf1)ok++;else msgs.push('B1: False');
+  const tf2=document.getElementById('rTF2').value==='T';if(tf2)ok++;else msgs.push('B2: True');
+  const tf3=document.getElementById('rTF3').value==='F';if(tf3)ok++;else msgs.push('B3: False (Friday evenings)');
+  showFb('read-fb',ok,6,msgs);
+}
+
+function gradeTest(){
+  let total=0,correct=0;
+  const secs={};
+  function chk(secKey,ids,ans,isWritten){
+    let ok=0;
+    ids.forEach((id,i)=>{
+      const c=isWritten?document.getElementById(id).value.trim().length>3:match(document.getElementById(id).value,ans[i]);
+      if(c){ok++;correct++}
+      total++;
+    });
+    secs[secKey]={ok,tot:ids.length};
+  }
+  chk('rA',['ta1','ta2','ta3','ta4','ta5'],[['lake','mountain lake'],['river','by the river'],['village square'],['bookshop'],['craft fair']]);
+  const tfExp={tTF1:'F',tTF2:'T',tTF3:'F',tTF4:'F',tTF5:'T'};
+  let tfOk=0;
+  Object.entries(tfExp).forEach(([id,exp])=>{if(document.getElementById(id).value===exp)tfOk++;total++;});
+  correct+=tfOk;secs.rB={ok:tfOk,tot:5};
+  chk('rC',['tc1','tc2','tc3','tc4','tc5'],[],[],[],[],true);
+  chk('gA',['ga1','ga2','ga3','ga4','ga5'],[['between'],['along'],['on'],['near','next to','beside'],['across']]);
+  chk('gB',['gb1','gb2','gb3'],[['fresher than'],['cosier than','cozier than'],['more exciting than']]);
+  chk('gC',['gc1','gc2','gc3'],[['the most spectacular'],['the tallest'],['the best']]);
+  const d=[['gd1','was'],['gd1b','were'],['gd2','there were'],['gd2b','there was'],['gd3',"there weren't"],['gd3b','there were']];
+  let dOk=0;d.forEach(([id,ans])=>{if(match(document.getElementById(id).value,ans)){dOk++;correct++;}total++;});
+  secs.gD={ok:dOk,tot:6};
+
+  const pct=Math.round(correct/total*100);
+  document.getElementById('res-score').textContent=correct+' / '+total+' ('+pct+'%)';
+  let lbl=pct>=90?'Excellent work! Keep it up!':pct>=70?'Good job! Review the mistakes carefully.':pct>=50?'Keep studying — you are getting there!':'Review the Study section and try again!';
+  document.getElementById('res-label').textContent=lbl;
+
+  const names={rA:'Reading A — Find in the text',rB:'Reading B — True / False',rC:'Reading C — Questions (any reasonable answer)',gA:'Grammar A — Prepositions',gB:'Grammar B — Comparative',gC:'Grammar C — Superlative',gD:'Grammar D — Past to be'};
+  let rows='';
+  Object.entries(secs).forEach(([k,v])=>{
+    rows+='<div class="res-row"><span>'+names[k]+'</span><span style="font-weight:600">'+v.ok+' / '+v.tot+'</span></div>';
+  });
+  document.getElementById('res-rows').innerHTML=rows;
+
+  let corrHtml='';
+  const falseExpected={tTF1:"Pinehaven is a small village.",tTF3:"They visited the craft fair on Saturday mornings.",tTF4:"There wasn't a swimming pool in Pinehaven."};
+  Object.keys(falseExpected).forEach(id=>{
+    if(document.getElementById(id).value==='F'){
+      const c=document.getElementById(id+'c').value.trim();
+      if(c.length<4) corrHtml+='<p style="color:#dc2626;font-size:13px">⚠ '+id.replace('tTF','B')+': please write a correction.</p>';
+    }
+  });
+  if(corrHtml) document.getElementById('corrections-block').innerHTML='<div style="background:#fee2e2;padding:.65rem .9rem;border-radius:8px">'+corrHtml+'</div>';
+
+  document.getElementById('test-form').style.display='none';
+  document.getElementById('test-results').style.display='block';
+  window.scrollTo(0,0);
+}
+
+function resetTest(){
+  document.querySelectorAll('#test input[type=text],#test input[type=hidden]').forEach(i=>i.value='');
+  document.querySelectorAll('#test .tf-btn').forEach(b=>b.className='tf-btn');
+  document.getElementById('corrections-block').innerHTML='';
+  document.getElementById('test-form').style.display='block';
+  document.getElementById('test-results').style.display='none';
+}
+</script>
+</body>
+</html>
